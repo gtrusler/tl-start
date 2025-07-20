@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trusler Legal - Timeline Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="trusler_legal_theme.css">
+    
+    <style>
+        @import url('./trusler_legal_theme.css');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-sans) !important;
+            background-color: var(--background) !important;
+            color: var(--foreground) !important;
+            line-height: 1.5 !important;
+        }
+        
+        .timeline-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            min-height: 100vh;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+        
+        .center-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+        
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+        
+        .panel-card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            transition: var(--transition-hover);
+        }
+        
+        .panel-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-h3);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+        
+        .panel-title svg {
+            width: 24px;
+            height: 24px;
+            color: var(--primary);
+        }
+        
+        .profile-section {
+            text-align: center;
+            padding: var(--spacing-lg) 0;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid var(--primary);
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .profile-name {
+            font-size: var(--font-size-h2);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .profile-role {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+        }
+        
+        .profile-stat {
+            text-align: center;
+            padding: var(--spacing-md);
+            background: var(--gray-light);
+            border-radius: var(--radius-md);
+        }
+        
+        .profile-stat-number {
+            font-size: var(--font-size-h3);
+            font-weight: var(--font-weight-semibold);
+            color: var(--primary);
+        }
+        
+        .profile-stat-label {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition-hover);
+        }
+        
+        .nav-link:hover {
+            background: var(--gray-light);
+            color: var(--text-primary);
+        }
+        
+        .nav-link.active {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+        
+        .nav-link svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .timeline-header {
+            background: var(--gradient-primary);
+            color: var(--primary-foreground);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            text-align: center;
+        }
+        
+        .timeline-date {
+            font-size: var(--font-size-h1);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .timeline-subtitle {
+            opacity: 0.9;
+        }
+        
+        .timeline-container {
+            position: relative;
+            padding-left: var(--spacing-lg);
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: var(--spacing-xl);
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            transition: var(--transition-hover);
+        }
+        
+        .timeline-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: var(--spacing-lg);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid var(--background);
+        }
+        
+        .timeline-time {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .timeline-title {
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .timeline-description {
+            color: var(--text-secondary);
+            font-size: var(--font-size-small);
+            line-height: 1.5;
+        }
+        
+        .timeline-priority {
+            display: inline-block;
+            padding: 2px var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: 10px;
+            font-weight: var(--font-weight-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: var(--spacing-sm);
+        }
+        
+        .priority-high {
+            background: rgba(245, 166, 35, 0.1);
+            color: var(--warning);
+        }
+        
+        .priority-medium {
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--primary);
+        }
+        
+        .priority-low {
+            background: rgba(126, 211, 33, 0.1);
+            color: var(--accent);
+        }
+        
+        .weather-compact {
+            text-align: center;
+            padding: var(--spacing-md) 0;
+        }
+        
+        .weather-icon-small {
+            width: 48px;
+            height: 48px;
+            color: var(--accent);
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .weather-temp {
+            font-size: 1.5rem;
+            font-weight: var(--font-weight-semibold);
+            color: var(--primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            display: flex;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .activity-icon.case {
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--primary);
+        }
+        
+        .activity-icon.document {
+            background: rgba(126, 211, 33, 0.1);
+            color: var(--accent);
+        }
+        
+        .activity-icon.meeting {
+            background: rgba(245, 166, 35, 0.1);
+            color: var(--warning);
+        }
+        
+        .activity-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-title {
+            font-weight: var(--font-weight-medium);
+            margin-bottom: 2px;
+        }
+        
+        .activity-description {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .activity-time {
+            font-size: var(--font-size-small);
+            color: var(--muted-foreground);
+        }
+        
+        .quick-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-md);
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            background: var(--gray-light);
+            border-radius: var(--radius-md);
+        }
+        
+        .stat-label {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+        }
+        
+        .stat-value {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+        
+        @media (max-width: 1200px) {
+            .timeline-layout {
+                grid-template-columns: 250px 1fr 300px;
+            }
+        }
+        
+        @media (max-width: 968px) {
+            .timeline-layout {
+                grid-template-columns: 1fr;
+                padding: var(--spacing-md);
+            }
+            
+            .left-panel, .right-panel {
+                order: 2;
+            }
+            
+            .center-panel {
+                order: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="timeline-layout">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <!-- Profile Card -->
+            <div class="panel-card">
+                <div class="profile-section">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" alt="User" class="profile-avatar">
+                    <h2 class="profile-name">John Trusler</h2>
+                    <div class="profile-role">Managing Partner</div>
+                    
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <div class="profile-stat-number">24</div>
+                            <div class="profile-stat-label">Cases</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="profile-stat-number">156</div>
+                            <div class="profile-stat-label">Documents</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i data-lucide="menu"></i>
+                        <span>Navigation</span>
+                    </div>
+                </div>
+                
+                <ul class="nav-menu">
+                    <li><a href="#" class="nav-link active"><i data-lucide="home"></i> Dashboard</a></li>
+                    <li><a href="#" class="nav-link"><i data-lucide="bot"></i> AI Assistants</a></li>
+                    <li><a href="#" class="nav-link"><i data-lucide="folder"></i> Documents</a></li>
+                    <li><a href="#" class="nav-link"><i data-lucide="scale"></i> Cases</a></li>
+                    <li><a href="#" class="nav-link"><i data-lucide="bar-chart-3"></i> Reports</a></li>
+                    <li><a href="#" class="nav-link"><i data-lucide="settings"></i> Settings</a></li>
+                </ul>
+            </div>
+            
+            <!-- Weather -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i data-lucide="cloud-sun"></i>
+                        <span>Weather</span>
+                    </div>
+                </div>
+                
+                <div class="weather-compact">
+                    <i data-lucide="sun" class="weather-icon-small"></i>
+                    <div class="weather-temp">72°F</div>
+                    <div class="text-sm text-muted-foreground">Sunny in San Francisco</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel - Timeline -->
+        <div class="center-panel">
+            <!-- Timeline Header -->
+            <div class="timeline-header">
+                <div class="timeline-date" id="timelineDate"></div>
+                <div class="timeline-subtitle">Your schedule and important deadlines</div>
+            </div>
+            
+            <!-- Timeline -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i data-lucide="clock"></i>
+                        <span>Today's Timeline</span>
+                    </div>
+                </div>
+                
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">9:00 AM</div>
+                        <div class="timeline-title">Client Meeting - Smith vs. Johnson</div>
+                        <div class="timeline-description">Strategy discussion for employment law case. Review depositions and prepare for mediation.</div>
+                        <div class="timeline-priority priority-high">High Priority</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">11:30 AM</div>
+                        <div class="timeline-title">Document Review - Tech Startup Acquisition</div>
+                        <div class="timeline-description">Final review of merger documents and due diligence materials.</div>
+                        <div class="timeline-priority priority-medium">Medium Priority</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">2:00 PM</div>
+                        <div class="timeline-title">Court Hearing - Patent Case</div>
+                        <div class="timeline-description">Federal court hearing for intellectual property dispute. Prepare opening arguments.</div>
+                        <div class="timeline-priority priority-high">High Priority</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">4:30 PM</div>
+                        <div class="timeline-title">Team Meeting - Weekly Review</div>
+                        <div class="timeline-description">Review case progress, assign new tasks, and discuss upcoming deadlines.</div>
+                        <div class="timeline-priority priority-low">Low Priority</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">6:00 PM</div>
+                        <div class="timeline-title">Client Call - Real Estate Contract</div>
+                        <div class="timeline-description">Phone consultation regarding commercial property acquisition terms.</div>
+                        <div class="timeline-priority priority-medium">Medium Priority</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <!-- Quick Stats -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i data-lucide="trending-up"></i>
+                        <span>Quick Stats</span>
+                    </div>
+                </div>
+                
+                <div class="quick-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Cases Due This Week</span>
+                        <span class="stat-value">8</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Billable Hours (Month)</span>
+                        <span class="stat-value">142</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Client Meetings</span>
+                        <span class="stat-value">12</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Documents Pending</span>
+                        <span class="stat-value">23</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i data-lucide="activity"></i>
+                        <span>Recent Activity</span>
+                    </div>
+                </div>
+                
+                <div class="activity-feed">
+                    <div class="activity-item">
+                        <div class="activity-icon case">
+                            <i data-lucide="scale"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Case Updated</div>
+                            <div class="activity-description">Smith vs. Johnson - New evidence submitted</div>
+                            <div class="activity-time">2 hours ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon document">
+                            <i data-lucide="file-text"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Document Signed</div>
+                            <div class="activity-description">Client signed merger agreement</div>
+                            <div class="activity-time">4 hours ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon meeting">
+                            <i data-lucide="calendar"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Meeting Scheduled</div>
+                            <div class="activity-description">Deposition scheduled for next week</div>
+                            <div class="activity-time">6 hours ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon case">
+                            <i data-lucide="scale"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">New Case Assigned</div>
+                            <div class="activity-description">Corporate litigation case #2024-045</div>
+                            <div class="activity-time">8 hours ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon document">
+                            <i data-lucide="file-text"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Research Completed</div>
+                            <div class="activity-description">IP law precedent research finished</div>
+                            <div class="activity-time">1 day ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Assistant Quick Access -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i data-lucide="bot"></i>
+                        <span>AI Assistants</span>
+                    </div>
+                </div>
+                
+                <div class="space-y-2">
+                    <button class="w-full p-3 text-left bg-gray-light hover:bg-primary hover:text-white rounded-lg transition-colors">
+                        <div class="font-medium">Legal Research AI</div>
+                        <div class="text-xs opacity-75">Find case precedents</div>
+                    </button>
+                    <button class="w-full p-3 text-left bg-gray-light hover:bg-primary hover:text-white rounded-lg transition-colors">
+                        <div class="font-medium">Document Generator</div>
+                        <div class="text-xs opacity-75">Create legal documents</div>
+                    </button>
+                    <button class="w-full p-3 text-left bg-gray-light hover:bg-primary hover:text-white rounded-lg transition-colors">
+                        <div class="font-medium">Client Assistant</div>
+                        <div class="text-xs opacity-75">Client communication</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        
+        // Set timeline date
+        document.getElementById('timelineDate').textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // Navigation interactions
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Timeline item interactions
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            item.addEventListener('click', function() {
+                console.log('Timeline item clicked:', this.querySelector('.timeline-title').textContent);
+            });
+        });
+        
+        // Activity feed interactions
+        document.querySelectorAll('.activity-item').forEach(item => {
+            item.addEventListener('click', function() {
+                console.log('Activity clicked:', this.querySelector('.activity-title').textContent);
+            });
+        });
+    </script>
+</body>
+</html>

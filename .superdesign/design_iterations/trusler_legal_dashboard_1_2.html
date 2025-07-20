@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trusler Legal - Card Focus Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="trusler_legal_theme.css">
+    
+    <style>
+        @import url('./trusler_legal_theme.css');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-sans) !important;
+            background-color: var(--background) !important;
+            color: var(--foreground) !important;
+            line-height: 1.5 !important;
+        }
+        
+        .card-layout {
+            padding: var(--spacing-xl);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            background: var(--card);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: var(--spacing-lg);
+        }
+        
+        .nav-tab {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: var(--transition-hover);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .nav-tab.active {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+        
+        .nav-tab:hover:not(.active) {
+            background: var(--gray-light);
+        }
+        
+        .nav-tab svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .large-card {
+            background: var(--card);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition-hover);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .large-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .large-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            font-size: var(--font-size-h3);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+        
+        .card-title svg {
+            width: 28px;
+            height: 28px;
+            color: var(--primary);
+        }
+        
+        .card-action {
+            background: var(--gray-light);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm);
+            cursor: pointer;
+            transition: var(--transition-hover);
+        }
+        
+        .card-action:hover {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+        
+        .weather-large {
+            text-align: center;
+            padding: var(--spacing-lg) 0;
+        }
+        
+        .weather-icon-large {
+            width: 80px;
+            height: 80px;
+            color: var(--accent);
+            margin: 0 auto var(--spacing-lg);
+        }
+        
+        .temperature-large {
+            font-size: 3rem;
+            font-weight: var(--font-weight-semibold);
+            color: var(--primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .weather-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border);
+        }
+        
+        .weather-detail {
+            text-align: center;
+        }
+        
+        .weather-detail-value {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+        
+        .weather-detail-label {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .case-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .case-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-sm);
+            transition: var(--transition-hover);
+        }
+        
+        .case-item:hover {
+            background: var(--gray-light);
+        }
+        
+        .case-info h4 {
+            font-weight: var(--font-weight-medium);
+            margin-bottom: 2px;
+        }
+        
+        .case-meta {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+        }
+        
+        .case-status {
+            padding: 4px var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .status-active {
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--primary);
+        }
+        
+        .status-pending {
+            background: rgba(245, 166, 35, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-completed {
+            background: rgba(126, 211, 33, 0.1);
+            color: var(--accent);
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+        }
+        
+        .action-button {
+            background: var(--gray-light);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: var(--transition-hover);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            text-decoration: none;
+            color: var(--foreground);
+        }
+        
+        .action-button:hover {
+            background: var(--primary);
+            color: var(--primary-foreground);
+            transform: scale(1.02);
+        }
+        
+        .action-button svg {
+            width: 32px;
+            height: 32px;
+        }
+        
+        .action-button-text {
+            font-weight: var(--font-weight-medium);
+            text-align: center;
+        }
+        
+        .news-large {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        
+        .news-item-large {
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .news-item-large:last-child {
+            border-bottom: none;
+        }
+        
+        .news-title {
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.4;
+        }
+        
+        .news-summary {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: var(--font-size-small);
+            color: var(--muted-foreground);
+        }
+        
+        .user-profile-large {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .avatar-large {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+        }
+        
+        .user-info h3 {
+            font-size: var(--font-size-h3);
+            margin-bottom: 2px;
+        }
+        
+        .user-role {
+            color: var(--text-secondary);
+            font-size: var(--font-size-small);
+        }
+        
+        @media (max-width: 1200px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .card-layout {
+                padding: var(--spacing-lg);
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                gap: var(--spacing-md);
+                align-items: stretch;
+            }
+            
+            .nav-tabs {
+                overflow-x: auto;
+                padding-bottom: var(--spacing-sm);
+            }
+            
+            .large-card {
+                padding: var(--spacing-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card-layout">
+        <!-- Top Navigation Bar -->
+        <div class="top-bar">
+            <div class="user-profile-large">
+                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=48&h=48&fit=crop&crop=face" alt="User" class="avatar-large">
+                <div class="user-info">
+                    <h3>John Trusler</h3>
+                    <div class="user-role">Managing Partner</div>
+                </div>
+            </div>
+            
+            <nav class="nav-tabs">
+                <button class="nav-tab active">
+                    <i data-lucide="home"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-tab">
+                    <i data-lucide="bot"></i>
+                    <span>AI Assistants</span>
+                </button>
+                <button class="nav-tab">
+                    <i data-lucide="folder"></i>
+                    <span>Documents</span>
+                </button>
+                <button class="nav-tab">
+                    <i data-lucide="scale"></i>
+                    <span>Cases</span>
+                </button>
+                <button class="nav-tab">
+                    <i data-lucide="bar-chart-3"></i>
+                    <span>Reports</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Main Card Grid -->
+        <div class="card-grid">
+            <!-- Weather Card -->
+            <div class="large-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i data-lucide="cloud-sun"></i>
+                        <span>Weather & Conditions</span>
+                    </div>
+                    <button class="card-action">
+                        <i data-lucide="refresh-cw"></i>
+                    </button>
+                </div>
+                
+                <div class="weather-large">
+                    <i data-lucide="sun" class="weather-icon-large"></i>
+                    <div class="temperature-large">72°F</div>
+                    <div class="text-lg text-muted-foreground">Sunny and Clear</div>
+                    <div class="text-sm text-muted-foreground">Perfect weather for court appearances</div>
+                </div>
+                
+                <div class="weather-details">
+                    <div class="weather-detail">
+                        <div class="weather-detail-value">65%</div>
+                        <div class="weather-detail-label">Humidity</div>
+                    </div>
+                    <div class="weather-detail">
+                        <div class="weather-detail-value">8 mph</div>
+                        <div class="weather-detail-label">Wind</div>
+                    </div>
+                    <div class="weather-detail">
+                        <div class="weather-detail-value">30.12</div>
+                        <div class="weather-detail-label">Pressure</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Cases Card -->
+            <div class="large-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i data-lucide="scale"></i>
+                        <span>Active Cases</span>
+                    </div>
+                    <button class="card-action">
+                        <i data-lucide="plus"></i>
+                    </button>
+                </div>
+                
+                <div class="case-list">
+                    <div class="case-item">
+                        <div class="case-info">
+                            <h4>Smith vs. Johnson Corp</h4>
+                            <div class="case-meta">Employment Law • Due: Tomorrow</div>
+                        </div>
+                        <div class="case-status status-active">Active</div>
+                    </div>
+                    <div class="case-item">
+                        <div class="case-info">
+                            <h4>Tech Startup Acquisition</h4>
+                            <div class="case-meta">Corporate Law • Due: Next Week</div>
+                        </div>
+                        <div class="case-status status-pending">Pending</div>
+                    </div>
+                    <div class="case-item">
+                        <div class="case-info">
+                            <h4>Patent Infringement Case</h4>
+                            <div class="case-meta">IP Law • Due: Friday</div>
+                        </div>
+                        <div class="case-status status-active">Active</div>
+                    </div>
+                    <div class="case-item">
+                        <div class="case-info">
+                            <h4>Real Estate Contract Review</h4>
+                            <div class="case-meta">Real Estate • Completed</div>
+                        </div>
+                        <div class="case-status status-completed">Completed</div>
+                    </div>
+                    <div class="case-item">
+                        <div class="case-info">
+                            <h4>Merger & Acquisition Deal</h4>
+                            <div class="case-meta">Corporate Law • Due: Next Month</div>
+                        </div>
+                        <div class="case-status status-pending">Pending</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="large-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i data-lucide="zap"></i>
+                        <span>Quick Actions</span>
+                    </div>
+                </div>
+                
+                <div class="action-grid">
+                    <button class="action-button">
+                        <i data-lucide="plus-circle"></i>
+                        <div class="action-button-text">Create New Case</div>
+                    </button>
+                    <button class="action-button">
+                        <i data-lucide="calendar-plus"></i>
+                        <div class="action-button-text">Schedule Meeting</div>
+                    </button>
+                    <button class="action-button">
+                        <i data-lucide="file-text"></i>
+                        <div class="action-button-text">Generate Document</div>
+                    </button>
+                    <button class="action-button">
+                        <i data-lucide="users"></i>
+                        <div class="action-button-text">Add Client</div>
+                    </button>
+                    <button class="action-button">
+                        <i data-lucide="search"></i>
+                        <div class="action-button-text">Legal Research</div>
+                    </button>
+                    <button class="action-button">
+                        <i data-lucide="clock"></i>
+                        <div class="action-button-text">Time Tracking</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Legal News Card -->
+            <div class="large-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i data-lucide="newspaper"></i>
+                        <span>Legal News & Updates</span>
+                    </div>
+                    <button class="card-action">
+                        <i data-lucide="external-link"></i>
+                    </button>
+                </div>
+                
+                <div class="news-large">
+                    <article class="news-item-large">
+                        <h4 class="news-title">Supreme Court Rules on Digital Privacy Rights</h4>
+                        <p class="news-summary">The Supreme Court issued a landmark ruling on digital privacy, establishing new precedents for data protection in the digital age.</p>
+                        <div class="news-meta">
+                            <span>Legal Times</span>
+                            <span>2 hours ago</span>
+                        </div>
+                    </article>
+                    
+                    <article class="news-item-large">
+                        <h4 class="news-title">California Employment Law Changes Take Effect</h4>
+                        <p class="news-summary">New regulations regarding remote work policies and employee rights have been implemented across California.</p>
+                        <div class="news-meta">
+                            <span>CA Legal Journal</span>
+                            <span>4 hours ago</span>
+                        </div>
+                    </article>
+                    
+                    <article class="news-item-large">
+                        <h4 class="news-title">Federal Court Updates on Intellectual Property</h4>
+                        <p class="news-summary">Recent federal court decisions are reshaping how intellectual property cases are handled in the tech industry.</p>
+                        <div class="news-meta">
+                            <span>IP Law Review</span>
+                            <span>6 hours ago</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        
+        // Tab navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Card actions
+        document.querySelectorAll('.card-action').forEach(action => {
+            action.addEventListener('click', function() {
+                console.log('Card action clicked');
+            });
+        });
+        
+        // Action buttons
+        document.querySelectorAll('.action-button').forEach(button => {
+            button.addEventListener('click', function() {
+                console.log('Action:', this.textContent.trim());
+            });
+        });
+        
+        // Case items
+        document.querySelectorAll('.case-item').forEach(item => {
+            item.addEventListener('click', function() {
+                console.log('Case selected:', this.querySelector('h4').textContent);
+            });
+        });
+    </script>
+</body>
+</html>

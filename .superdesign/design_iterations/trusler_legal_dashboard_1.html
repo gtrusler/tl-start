@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trusler Legal - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="trusler_legal_theme.css">
+    
+    <style>
+        /* Import theme variables */
+        @import url('./trusler_legal_theme.css');
+        
+        /* Base styles with theme integration */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-sans) !important;
+            background-color: var(--background) !important;
+            color: var(--foreground) !important;
+            line-height: 1.5 !important;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-primary) !important;
+            font-weight: var(--font-weight-semibold) !important;
+        }
+        
+        h1 { font-size: var(--font-size-h1) !important; }
+        h2 { font-size: var(--font-size-h2) !important; }
+        h3 { font-size: var(--font-size-h3) !important; }
+        
+        /* Custom component styles */
+        .dashboard-container {
+            min-height: 100vh;
+            background-color: var(--background);
+            padding: var(--spacing-lg);
+        }
+        
+        .sidebar {
+            background: var(--sidebar);
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            padding: var(--spacing-lg) var(--spacing-md);
+            box-shadow: var(--shadow);
+            transition: var(--transition-default);
+            width: 280px;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 50;
+            transform: translateX(-100%);
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 40;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-default);
+        }
+        
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            color: var(--muted-foreground);
+            text-decoration: none;
+            transition: var(--transition-hover);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .nav-item:hover {
+            background: var(--gray-light);
+            transform: scale(1.02);
+        }
+        
+        .nav-item.active {
+            background: var(--primary);
+            color: var(--primary-foreground);
+            transform: scale(1.05);
+        }
+        
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .main-content {
+            margin-left: 0;
+            transition: var(--transition-default);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            transition: var(--transition-hover);
+            animation: cardEntrance 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+        
+        .card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .profile-card {
+            background: var(--gradient-primary);
+            color: var(--primary-foreground);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+        }
+        
+        .widget-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .resource-link {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            text-decoration: none;
+            color: var(--foreground);
+            box-shadow: var(--shadow);
+            transition: var(--transition-hover);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: var(--spacing-md);
+        }
+        
+        .resource-link:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: var(--primary);
+        }
+        
+        .resource-link svg {
+            width: 48px;
+            height: 48px;
+            color: var(--primary);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: var(--transition-hover);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .btn-primary:hover {
+            background: var(--blue-dark);
+            transform: scale(1.02);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: var(--transition-hover);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(74, 144, 226, 0.1);
+        }
+        
+        .weather-widget {
+            text-align: center;
+        }
+        
+        .weather-icon {
+            width: 64px;
+            height: 64px;
+            color: var(--accent);
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .news-item {
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition-hover);
+        }
+        
+        .news-item:hover {
+            background: var(--gray-light);
+            margin: 0 calc(-1 * var(--spacing-lg));
+            padding-left: var(--spacing-lg);
+            padding-right: var(--spacing-lg);
+            border-radius: var(--radius-sm);
+        }
+        
+        .news-item:last-child {
+            border-bottom: none;
+        }
+        
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            transition: var(--transition-hover);
+        }
+        
+        .hamburger:hover {
+            background: var(--gray-light);
+        }
+        
+        .hamburger span {
+            width: 24px;
+            height: 3px;
+            background: var(--foreground);
+            border-radius: 2px;
+            transition: var(--transition-default);
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+        
+        /* Animations */
+        @keyframes cardEntrance {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+        .stagger-6 { animation-delay: 0.6s; }
+        
+        /* Google Auth Button */
+        .google-auth {
+            position: fixed;
+            top: var(--spacing-lg);
+            right: var(--spacing-lg);
+            z-index: 100;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            background: var(--card);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: var(--spacing-md);
+            }
+            
+            .widget-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .resource-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+        
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Google Auth Section -->
+    <div class="google-auth">
+        <div class="user-profile">
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" alt="User" class="avatar">
+            <div>
+                <div class="font-medium text-sm">John Trusler</div>
+                <div class="text-xs text-gray-500">john@truslerlegal.com</div>
+            </div>
+            <button class="btn-secondary text-xs">Logout</button>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold text-primary mb-2">Trusler Legal</h2>
+            <p class="text-sm text-muted-foreground">Internal Dashboard</p>
+        </div>
+        
+        <div class="space-y-2">
+            <a href="#" class="nav-item active">
+                <i data-lucide="home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showChatbots()">
+                <i data-lucide="bot"></i>
+                <span>AI Assistants</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="folder"></i>
+                <span>Documents</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="scale"></i>
+                <span>Cases</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="bar-chart-3"></i>
+                <span>Reports</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="settings"></i>
+                <span>Admin</span>
+            </a>
+        </div>
+        
+        <div class="mt-8 pt-8 border-t border-border">
+            <button class="nav-item w-full text-left">
+                <i data-lucide="plus"></i>
+                <span>Add New Page</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="flex items-center gap-4">
+                <div class="hamburger" id="hamburger" onclick="toggleSidebar()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-semibold">Good morning, John</h1>
+                    <p class="text-muted-foreground">Here's what's happening at Trusler Legal today</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-sm text-muted-foreground">Today</div>
+                <div class="font-semibold" id="currentDate"></div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div id="dashboardContent">
+            <!-- Widgets Grid -->
+            <div class="widget-grid">
+                <!-- Weather Widget -->
+                <div class="card stagger-1">
+                    <div class="weather-widget">
+                        <i data-lucide="sun" class="weather-icon"></i>
+                        <h3 class="text-lg font-semibold mb-2">Weather</h3>
+                        <div class="text-3xl font-bold text-primary mb-1">72°F</div>
+                        <div class="text-muted-foreground">Sunny, Perfect for court</div>
+                        <div class="text-sm text-muted-foreground mt-2">San Francisco, CA</div>
+                    </div>
+                </div>
+
+                <!-- News Headlines -->
+                <div class="card stagger-2">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i data-lucide="newspaper"></i>
+                        Legal News
+                    </h3>
+                    <div class="space-y-0">
+                        <div class="news-item">
+                            <div class="font-medium text-sm">Supreme Court Rules on Digital Privacy</div>
+                            <div class="text-xs text-muted-foreground">2 hours ago</div>
+                        </div>
+                        <div class="news-item">
+                            <div class="font-medium text-sm">New California Employment Law Changes</div>
+                            <div class="text-xs text-muted-foreground">4 hours ago</div>
+                        </div>
+                        <div class="news-item">
+                            <div class="font-medium text-sm">Federal Court Updates on IP Law</div>
+                            <div class="text-xs text-muted-foreground">6 hours ago</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card stagger-3">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i data-lucide="zap"></i>
+                        Quick Actions
+                    </h3>
+                    <div class="space-y-3">
+                        <button class="btn-primary w-full">
+                            <i data-lucide="plus"></i>
+                            New Case
+                        </button>
+                        <button class="btn-secondary w-full">
+                            <i data-lucide="calendar"></i>
+                            Schedule Meeting
+                        </button>
+                        <button class="btn-secondary w-full">
+                            <i data-lucide="file-text"></i>
+                            Generate Document
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource Links -->
+            <div class="card stagger-4">
+                <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                    <i data-lucide="link"></i>
+                    Resource Links
+                </h2>
+                <div class="resource-grid">
+                    <a href="#" class="resource-link">
+                        <i data-lucide="clipboard-list"></i>
+                        <span class="font-medium">Case Management</span>
+                    </a>
+                    <a href="#" class="resource-link">
+                        <i data-lucide="mail"></i>
+                        <span class="font-medium">Email</span>
+                    </a>
+                    <a href="#" class="resource-link">
+                        <i data-lucide="calendar"></i>
+                        <span class="font-medium">Calendar</span>
+                    </a>
+                    <a href="#" class="resource-link">
+                        <i data-lucide="credit-card"></i>
+                        <span class="font-medium">Billing</span>
+                    </a>
+                    <a href="#" class="resource-link">
+                        <i data-lucide="book-open"></i>
+                        <span class="font-medium">Legal Research</span>
+                    </a>
+                    <a href="#" class="resource-link">
+                        <i data-lucide="users"></i>
+                        <span class="font-medium">Contacts</span>
+                    </a>
+                    <a href="#" class="resource-link">
+                        <i data-lucide="search"></i>
+                        <span class="font-medium">Discovery</span>
+                    </a>
+                    <a href="#" class="resource-link">
+                        <i data-lucide="file-text"></i>
+                        <span class="font-medium">Forms</span>
+                    </a>
+                    <a href="#" class="resource-link">
+                        <i data-lucide="bar-chart"></i>
+                        <span class="font-medium">Analytics</span>
+                    </a>
+                    <a href="#" class="resource-link">
+                        <i data-lucide="plus-circle"></i>
+                        <span class="font-medium">Add New Link</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chatbots Page (Hidden by default) -->
+        <div id="chatbotsContent" style="display: none;">
+            <div class="card">
+                <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                    <i data-lucide="bot"></i>
+                    AI Assistants
+                </h2>
+                <div class="resource-grid">
+                    <div class="resource-link">
+                        <i data-lucide="user"></i>
+                        <span class="font-medium">Client A Assistant</span>
+                        <button class="btn-primary mt-2">Launch</button>
+                    </div>
+                    <div class="resource-link">
+                        <i data-lucide="user"></i>
+                        <span class="font-medium">Client B Assistant</span>
+                        <button class="btn-primary mt-2">Launch</button>
+                    </div>
+                    <div class="resource-link">
+                        <i data-lucide="user"></i>
+                        <span class="font-medium">Client C Assistant</span>
+                        <button class="btn-primary mt-2">Launch</button>
+                    </div>
+                    <div class="resource-link">
+                        <i data-lucide="briefcase"></i>
+                        <span class="font-medium">General Counsel</span>
+                        <button class="btn-primary mt-2">Launch</button>
+                    </div>
+                    <div class="resource-link">
+                        <i data-lucide="search"></i>
+                        <span class="font-medium">Research Assistant</span>
+                        <button class="btn-primary mt-2">Launch</button>
+                    </div>
+                    <div class="resource-link">
+                        <i data-lucide="plus-circle"></i>
+                        <span class="font-medium">Create New Bot</span>
+                        <button class="btn-secondary mt-2">Setup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Set current date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // Sidebar functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const hamburger = document.getElementById('hamburger');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+        
+        // Close sidebar when clicking overlay
+        document.getElementById('sidebarOverlay').addEventListener('click', toggleSidebar);
+        
+        // Navigation functionality
+        function showChatbots() {
+            document.getElementById('dashboardContent').style.display = 'none';
+            document.getElementById('chatbotsContent').style.display = 'block';
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+        }
+        
+        function showDashboard() {
+            document.getElementById('dashboardContent').style.display = 'block';
+            document.getElementById('chatbotsContent').style.display = 'none';
+        }
+        
+        // Add click handlers to nav items
+        document.querySelectorAll('.nav-item').forEach((item, index) => {
+            if (index === 0) { // Dashboard
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showDashboard();
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+                });
+            }
+        });
+        
+        // Simulate Google Auth (placeholder)
+        console.log('Google Auth integration would be implemented here');
+        
+        // Add some interactive feedback
+        document.querySelectorAll('.resource-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Add ripple effect or navigation logic here
+                console.log('Navigating to:', link.textContent.trim());
+            });
+        });
+        
+        // Weather widget refresh animation
+        document.querySelector('.weather-icon').addEventListener('click', function() {
+            this.style.transform = 'rotate(360deg)';
+            setTimeout(() => {
+                this.style.transform = 'rotate(0deg)';
+            }, 400);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trusler Legal - Compact Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="trusler_legal_theme.css">
+    
+    <style>
+        @import url('./trusler_legal_theme.css');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-sans) !important;
+            background-color: var(--background) !important;
+            color: var(--foreground) !important;
+            line-height: 1.5 !important;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-primary) !important;
+            font-weight: var(--font-weight-semibold) !important;
+        }
+        
+        .compact-layout {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            min-height: 100vh;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+        }
+        
+        .mini-sidebar {
+            background: var(--sidebar);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-md);
+            height: fit-content;
+            position: sticky;
+            top: var(--spacing-lg);
+        }
+        
+        .mini-nav-item {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted-foreground);
+            transition: var(--transition-hover);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .mini-nav-item:hover {
+            background: var(--gray-light);
+            transform: scale(1.1);
+        }
+        
+        .mini-nav-item.active {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+        
+        .mini-nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .tooltip {
+            position: absolute;
+            left: 60px;
+            background: var(--card);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-md);
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-default);
+            z-index: 100;
+        }
+        
+        .mini-nav-item:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: auto auto 1fr;
+            gap: var(--spacing-md);
+            height: fit-content;
+        }
+        
+        .header-compact {
+            grid-column: 1 / -1;
+            background: var(--gradient-primary);
+            color: var(--primary-foreground);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stats-row {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-md);
+        }
+        
+        .stat-card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition-hover);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: var(--font-weight-semibold);
+            color: var(--primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: var(--font-size-small);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .widget-compact {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            transition: var(--transition-hover);
+        }
+        
+        .widget-compact:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .widget-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .widget-header svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
+        }
+        
+        .quick-action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-sm);
+        }
+        
+        .quick-action {
+            background: var(--gray-light);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            cursor: pointer;
+            transition: var(--transition-hover);
+            text-decoration: none;
+            color: var(--foreground);
+        }
+        
+        .quick-action:hover {
+            background: var(--primary);
+            color: var(--primary-foreground);
+            transform: scale(1.02);
+        }
+        
+        .quick-action svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .news-compact {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .news-item-compact {
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--border);
+            font-size: var(--font-size-small);
+        }
+        
+        .news-item-compact:last-child {
+            border-bottom: none;
+        }
+        
+        .user-profile-compact {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .avatar-compact {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .compact-layout {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+            
+            .mini-sidebar {
+                flex-direction: row;
+                position: static;
+                overflow-x: auto;
+            }
+            
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="compact-layout">
+        <!-- Mini Sidebar -->
+        <nav class="mini-sidebar">
+            <div class="mini-nav-item active">
+                <i data-lucide="home"></i>
+                <div class="tooltip">Dashboard</div>
+            </div>
+            <div class="mini-nav-item">
+                <i data-lucide="bot"></i>
+                <div class="tooltip">AI Assistants</div>
+            </div>
+            <div class="mini-nav-item">
+                <i data-lucide="folder"></i>
+                <div class="tooltip">Documents</div>
+            </div>
+            <div class="mini-nav-item">
+                <i data-lucide="scale"></i>
+                <div class="tooltip">Cases</div>
+            </div>
+            <div class="mini-nav-item">
+                <i data-lucide="bar-chart-3"></i>
+                <div class="tooltip">Reports</div>
+            </div>
+            <div class="mini-nav-item">
+                <i data-lucide="settings"></i>
+                <div class="tooltip">Settings</div>
+            </div>
+            <div style="height: 1px; background: var(--border); width: 100%; margin: var(--spacing-sm) 0;"></div>
+            <div class="mini-nav-item">
+                <i data-lucide="plus"></i>
+                <div class="tooltip">Add Page</div>
+            </div>
+        </nav>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Header -->
+            <header class="header-compact">
+                <div>
+                    <h1 class="text-xl font-semibold mb-1">Trusler Legal Dashboard</h1>
+                    <p class="text-sm opacity-90">Compact view for maximum efficiency</p>
+                </div>
+                <div class="user-profile-compact">
+                    <div class="text-right text-sm">
+                        <div class="font-medium">John Trusler</div>
+                        <div class="opacity-75" id="compactDate"></div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face" alt="User" class="avatar-compact">
+                </div>
+            </header>
+
+            <!-- Stats Row -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-number">24</div>
+                    <div class="stat-label">Active Cases</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Due Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">156</div>
+                    <div class="stat-label">Documents</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">92%</div>
+                    <div class="stat-label">Efficiency</div>
+                </div>
+            </div>
+
+            <!-- Weather Widget -->
+            <div class="widget-compact">
+                <div class="widget-header">
+                    <i data-lucide="sun"></i>
+                    <h3 class="font-medium">Weather</h3>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-primary mb-1">72°F</div>
+                    <div class="text-sm text-muted-foreground">Sunny in SF</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="widget-compact">
+                <div class="widget-header">
+                    <i data-lucide="zap"></i>
+                    <h3 class="font-medium">Quick Actions</h3>
+                </div>
+                <div class="quick-action-grid">
+                    <button class="quick-action">
+                        <i data-lucide="plus"></i>
+                        <span class="text-xs">New Case</span>
+                    </button>
+                    <button class="quick-action">
+                        <i data-lucide="calendar"></i>
+                        <span class="text-xs">Schedule</span>
+                    </button>
+                    <button class="quick-action">
+                        <i data-lucide="file-text"></i>
+                        <span class="text-xs">Document</span>
+                    </button>
+                    <button class="quick-action">
+                        <i data-lucide="users"></i>
+                        <span class="text-xs">Client</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- News -->
+            <div class="widget-compact">
+                <div class="widget-header">
+                    <i data-lucide="newspaper"></i>
+                    <h3 class="font-medium">Legal News</h3>
+                </div>
+                <div class="news-compact">
+                    <div class="news-item-compact">
+                        <div class="font-medium">Supreme Court Digital Privacy Ruling</div>
+                        <div class="text-xs text-muted-foreground">2h ago</div>
+                    </div>
+                    <div class="news-item-compact">
+                        <div class="font-medium">CA Employment Law Changes</div>
+                        <div class="text-xs text-muted-foreground">4h ago</div>
+                    </div>
+                    <div class="news-item-compact">
+                        <div class="font-medium">Federal IP Law Updates</div>
+                        <div class="text-xs text-muted-foreground">6h ago</div>
+                    </div>
+                    <div class="news-item-compact">
+                        <div class="font-medium">New Bar Association Guidelines</div>
+                        <div class="text-xs text-muted-foreground">8h ago</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="widget-compact">
+                <div class="widget-header">
+                    <i data-lucide="activity"></i>
+                    <h3 class="font-medium">Recent Activity</h3>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 text-sm">
+                        <div class="w-2 h-2 bg-accent rounded-full"></div>
+                        <span>Case #2024-001 updated</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <div class="w-2 h-2 bg-primary rounded-full"></div>
+                        <span>Document signed by client</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <div class="w-2 h-2 bg-warning rounded-full"></div>
+                        <span>Meeting scheduled for tomorrow</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        
+        document.getElementById('compactDate').textContent = new Date().toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric'
+        });
+        
+        // Mini nav interactions
+        document.querySelectorAll('.mini-nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.mini-nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Quick action interactions
+        document.querySelectorAll('.quick-action').forEach(action => {
+            action.addEventListener('click', function() {
+                console.log('Quick action:', this.textContent.trim());
+            });
+        });
+    </script>
+</body>
+</html>

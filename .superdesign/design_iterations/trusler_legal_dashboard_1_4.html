@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trusler Legal - Mobile Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="trusler_legal_theme.css">
+    
+    <style>
+        @import url('./trusler_legal_theme.css');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-sans) !important;
+            background-color: var(--background) !important;
+            color: var(--foreground) !important;
+            line-height: 1.5 !important;
+        }
+        
+        .mobile-layout {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mobile-header {
+            background: var(--card);
+            padding: var(--spacing-lg) var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .logo {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .logo svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .company-name {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+        
+        .user-avatar-mobile {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+        }
+        
+        .greeting-section {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .greeting-text {
+            font-size: var(--font-size-h2);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+        
+        .greeting-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--font-size-small);
+        }
+        
+        .search-bar-mobile {
+            background: var(--gray-light);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .search-bar-mobile input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: var(--font-size-body);
+            color: var(--text-primary);
+        }
+        
+        .search-bar-mobile input::placeholder {
+            color: var(--muted-foreground);
+        }
+        
+        .search-bar-mobile svg {
+            width: 20px;
+            height: 20px;
+            color: var(--muted-foreground);
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: var(--spacing-md);
+            overflow-y: auto;
+        }
+        
+        .stats-row-mobile {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .stat-card-mobile {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition-hover);
+        }
+        
+        .stat-card-mobile:active {
+            transform: scale(0.98);
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-sm);
+        }
+        
+        .stat-icon.cases {
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--primary);
+        }
+        
+        .stat-icon.documents {
+            background: rgba(126, 211, 33, 0.1);
+            color: var(--accent);
+        }
+        
+        .stat-icon.meetings {
+            background: rgba(245, 166, 35, 0.1);
+            color: var(--warning);
+        }
+        
+        .stat-icon.hours {
+            background: rgba(156, 163, 175, 0.1);
+            color: var(--muted-foreground);
+        }
+        
+        .stat-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .stat-number-mobile {
+            font-size: 1.5rem;
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+        
+        .stat-label-mobile {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .section-title {
+            font-size: var(--font-size-h3);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+        
+        .section-action {
+            color: var(--primary);
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-medium);
+            text-decoration: none;
+        }
+        
+        .quick-actions-mobile {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .action-card-mobile {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            text-decoration: none;
+            color: var(--foreground);
+            transition: var(--transition-hover);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .action-card-mobile:active {
+            transform: scale(0.98);
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+        
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            background: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+        
+        .action-card-mobile:active .action-icon {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--primary-foreground);
+        }
+        
+        .action-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .action-text {
+            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-small);
+        }
+        
+        .card-mobile {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .card-header-mobile {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .card-header-mobile svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
+        }
+        
+        .card-title-mobile {
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+        
+        .case-item-mobile {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .case-item-mobile:last-child {
+            border-bottom: none;
+        }
+        
+        .case-info-mobile {
+            flex: 1;
+        }
+        
+        .case-title-mobile {
+            font-weight: var(--font-weight-medium);
+            margin-bottom: 2px;
+            font-size: var(--font-size-small);
+        }
+        
+        .case-meta-mobile {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .case-status-mobile {
+            padding: 2px var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: 10px;
+            font-weight: var(--font-weight-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-active-mobile {
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--primary);
+        }
+        
+        .status-pending-mobile {
+            background: rgba(245, 166, 35, 0.1);
+            color: var(--warning);
+        }
+        
+        .weather-mobile {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .weather-icon-mobile {
+            width: 48px;
+            height: 48px;
+            color: var(--accent);
+        }
+        
+        .weather-info-mobile {
+            flex: 1;
+        }
+        
+        .weather-temp-mobile {
+            font-size: 1.25rem;
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+        
+        .weather-desc-mobile {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+        }
+        
+        .bottom-nav {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: var(--spacing-sm) 0;
+            display: flex;
+            justify-content: space-around;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+        }
+        
+        .nav-item-mobile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: var(--spacing-sm);
+            color: var(--muted-foreground);
+            text-decoration: none;
+            transition: var(--transition-hover);
+            border-radius: var(--radius-sm);
+            min-width: 60px;
+        }
+        
+        .nav-item-mobile.active {
+            color: var(--primary);
+            background: rgba(74, 144, 226, 0.1);
+        }
+        
+        .nav-item-mobile svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .nav-label {
+            font-size: 10px;
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .floating-action {
+            position: fixed;
+            bottom: 80px;
+            right: var(--spacing-md);
+            width: 56px;
+            height: 56px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            color: var(--primary-foreground);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-hover);
+            z-index: 50;
+        }
+        
+        .floating-action:active {
+            transform: scale(0.95);
+        }
+        
+        .floating-action svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        /* Swipe gestures simulation */
+        .swipeable {
+            touch-action: pan-y;
+        }
+        
+        @media (min-width: 768px) {
+            .mobile-layout {
+                max-width: 480px;
+                margin: 0 auto;
+                border-left: 1px solid var(--border);
+                border-right: 1px solid var(--border);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-layout">
+        <!-- Mobile Header -->
+        <header class="mobile-header">
+            <div class="header-top">
+                <div class="logo-section">
+                    <div class="logo">
+                        <i data-lucide="scale"></i>
+                    </div>
+                    <span class="company-name">Trusler Legal</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=36&h=36&fit=crop&crop=face" alt="User" class="user-avatar-mobile">
+            </div>
+            
+            <div class="greeting-section">
+                <div class="greeting-text">Good morning, John</div>
+                <div class="greeting-subtitle" id="mobileDate"></div>
+            </div>
+            
+            <div class="search-bar-mobile">
+                <i data-lucide="search"></i>
+                <input type="text" placeholder="Search cases, documents, clients...">
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content swipeable">
+            <!-- Stats Row -->
+            <div class="stats-row-mobile">
+                <div class="stat-card-mobile">
+                    <div class="stat-icon cases">
+                        <i data-lucide="scale"></i>
+                    </div>
+                    <div class="stat-number-mobile">24</div>
+                    <div class="stat-label-mobile">Active Cases</div>
+                </div>
+                <div class="stat-card-mobile">
+                    <div class="stat-icon documents">
+                        <i data-lucide="file-text"></i>
+                    </div>
+                    <div class="stat-number-mobile">156</div>
+                    <div class="stat-label-mobile">Documents</div>
+                </div>
+                <div class="stat-card-mobile">
+                    <div class="stat-icon meetings">
+                        <i data-lucide="calendar"></i>
+                    </div>
+                    <div class="stat-number-mobile">8</div>
+                    <div class="stat-label-mobile">Meetings</div>
+                </div>
+                <div class="stat-card-mobile">
+                    <div class="stat-icon hours">
+                        <i data-lucide="clock"></i>
+                    </div>
+                    <div class="stat-number-mobile">142</div>
+                    <div class="stat-label-mobile">Hours</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="section-header">
+                <h2 class="section-title">Quick Actions</h2>
+            </div>
+            <div class="quick-actions-mobile">
+                <a href="#" class="action-card-mobile">
+                    <div class="action-icon">
+                        <i data-lucide="plus-circle"></i>
+                    </div>
+                    <span class="action-text">New Case</span>
+                </a>
+                <a href="#" class="action-card-mobile">
+                    <div class="action-icon">
+                        <i data-lucide="calendar-plus"></i>
+                    </div>
+                    <span class="action-text">Schedule</span>
+                </a>
+                <a href="#" class="action-card-mobile">
+                    <div class="action-icon">
+                        <i data-lucide="file-text"></i>
+                    </div>
+                    <span class="action-text">Document</span>
+                </a>
+                <a href="#" class="action-card-mobile">
+                    <div class="action-icon">
+                        <i data-lucide="bot"></i>
+                    </div>
+                    <span class="action-text">AI Assistant</span>
+                </a>
+            </div>
+
+            <!-- Recent Cases -->
+            <div class="section-header">
+                <h2 class="section-title">Recent Cases</h2>
+                <a href="#" class="section-action">View All</a>
+            </div>
+            <div class="card-mobile">
+                <div class="case-item-mobile">
+                    <div class="case-info-mobile">
+                        <div class="case-title-mobile">Smith vs. Johnson Corp</div>
+                        <div class="case-meta-mobile">Employment Law • Due Tomorrow</div>
+                    </div>
+                    <div class="case-status-mobile status-active-mobile">Active</div>
+                </div>
+                <div class="case-item-mobile">
+                    <div class="case-info-mobile">
+                        <div class="case-title-mobile">Tech Startup Acquisition</div>
+                        <div class="case-meta-mobile">Corporate Law • Due Next Week</div>
+                    </div>
+                    <div class="case-status-mobile status-pending-mobile">Pending</div>
+                </div>
+                <div class="case-item-mobile">
+                    <div class="case-info-mobile">
+                        <div class="case-title-mobile">Patent Infringement</div>
+                        <div class="case-meta-mobile">IP Law • Due Friday</div>
+                    </div>
+                    <div class="case-status-mobile status-active-mobile">Active</div>
+                </div>
+            </div>
+
+            <!-- Weather -->
+            <div class="section-header">
+                <h2 class="section-title">Today's Weather</h2>
+            </div>
+            <div class="card-mobile">
+                <div class="weather-mobile">
+                    <i data-lucide="sun" class="weather-icon-mobile"></i>
+                    <div class="weather-info-mobile">
+                        <div class="weather-temp-mobile">72°F</div>
+                        <div class="weather-desc-mobile">Sunny and clear in San Francisco</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Assistants -->
+            <div class="section-header">
+                <h2 class="section-title">AI Assistants</h2>
+                <a href="#" class="section-action">View All</a>
+            </div>
+            <div class="card-mobile">
+                <div class="card-header-mobile">
+                    <i data-lucide="bot"></i>
+                    <span class="card-title-mobile">Quick Access</span>
+                </div>
+                <div class="space-y-3">
+                    <button class="w-full p-3 text-left bg-gray-light hover:bg-primary hover:text-white rounded-lg transition-colors flex items-center gap-3">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                        <div>
+                            <div class="font-medium text-sm">Legal Research AI</div>
+                            <div class="text-xs opacity-75">Find case precedents and legal references</div>
+                        </div>
+                    </button>
+                    <button class="w-full p-3 text-left bg-gray-light hover:bg-primary hover:text-white rounded-lg transition-colors flex items-center gap-3">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        <div>
+                            <div class="font-medium text-sm">Document Generator</div>
+                            <div class="text-xs opacity-75">Create contracts and legal documents</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Floating Action Button -->
+        <button class="floating-action">
+            <i data-lucide="plus"></i>
+        </button>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item-mobile active">
+                <i data-lucide="home"></i>
+                <span class="nav-label">Home</span>
+            </a>
+            <a href="#" class="nav-item-mobile">
+                <i data-lucide="scale"></i>
+                <span class="nav-label">Cases</span>
+            </a>
+            <a href="#" class="nav-item-mobile">
+                <i data-lucide="folder"></i>
+                <span class="nav-label">Documents</span>
+            </a>
+            <a href="#" class="nav-item-mobile">
+                <i data-lucide="calendar"></i>
+                <span class="nav-label">Calendar</span>
+            </a>
+            <a href="#" class="nav-item-mobile">
+                <i data-lucide="user"></i>
+                <span class="nav-label">Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        
+        // Set mobile date
+        document.getElementById('mobileDate').textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // Bottom navigation
+        document.querySelectorAll('.nav-item-mobile').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-item-mobile').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Floating action button
+        document.querySelector('.floating-action').addEventListener('click', function() {
+            console.log('Floating action clicked');
+        });
+        
+        // Quick actions
+        document.querySelectorAll('.action-card-mobile').forEach(action => {
+            action.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Quick action:', this.textContent.trim());
+            });
+        });
+        
+        // Stat cards
+        document.querySelectorAll('.stat-card-mobile').forEach(card => {
+            card.addEventListener('click', function() {
+                console.log('Stat clicked:', this.textContent.trim());
+            });
+        });
+        
+        // Case items
+        document.querySelectorAll('.case-item-mobile').forEach(item => {
+            item.addEventListener('click', function() {
+                console.log('Case clicked:', this.querySelector('.case-title-mobile').textContent);
+            });
+        });
+        
+        // Search functionality
+        document.querySelector('.search-bar-mobile input').addEventListener('focus', function() {
+            this.parentElement.style.borderColor = 'var(--primary)';
+        });
+        
+        document.querySelector('.search-bar-mobile input').addEventListener('blur', function() {
+            this.parentElement.style.borderColor = 'var(--border)';
+        });
+    </script>
+</body>
+</html>
