@@ -35,7 +35,11 @@ export async function GET() {
       throw new Error('Weather API failed')
     }
 
-    const data = await response.json()
+    const data = await response.json() as {
+      main: { temp: number; humidity: number };
+      weather: Array<{ main: string; description: string }>;
+      wind: { speed: number };
+    }
     
     // Map weather conditions to our icons
     const getWeatherIcon = (weatherMain: string, weatherDescription: string) => {

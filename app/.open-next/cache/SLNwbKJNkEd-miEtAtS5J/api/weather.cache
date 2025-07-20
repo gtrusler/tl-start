@@ -1,0 +1,1 @@
+{"type":"route","meta":{"status":200,"headers":{"content-type":"application/json","x-next-cache-tags":"_N_T_/layout,_N_T_/api/layout,_N_T_/api/weather/layout,_N_T_/api/weather/route,_N_T_/api/weather"}},"body":"{\"temperature\":77,\"description\":\"Sunny\",\"icon\":\"sun\",\"location\":\"Austin, TX\",\"humidity\":65,\"windSpeed\":14,\"lastUpdated\":\"2025-07-20T22:50:29.471Z\"}"}

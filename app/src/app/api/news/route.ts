@@ -37,10 +37,10 @@ export async function GET() {
       })
     }
 
-    const data = await response.json()
+    const data = await response.json() as { articles?: Array<{title: string; publishedAt: string; url: string}> }
     
     // Filter and format the news data
-    const formattedNews = data.articles?.slice(0, 3).map((article: any) => ({
+    const formattedNews = data.articles?.slice(0, 3).map((article) => ({
       title: article.title,
       publishedAt: article.publishedAt,
       url: article.url

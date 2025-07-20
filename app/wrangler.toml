@@ -1,0 +1,17 @@
+main = ".open-next/worker.js"
+name = "trusler-legal-portal"
+compatibility_date = "2025-07-19"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+
+[[d1_databases]]
+binding = "DB"
+database_name = "trusler-legal-portal-db"
+database_id = "24a8d9e5-6e64-4bd6-8e3d-88e7b543946a"
+
+[vars]
+NODE_ENV = "production"

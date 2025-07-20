@@ -33,7 +33,7 @@ export default function Home() {
         <p className="text-gray-600 mb-8">A professional dashboard application with authentication</p>
         <button
           onClick={() => router.push("/auth/signin")}
-          className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-all flex items-center gap-2 mx-auto"
+          className="bg-primary text-white px-8 py-3 rounded-lg font-medium hover:bg-primary/90 transition-all flex items-center gap-2 mx-auto"
         >
           <LogIn className="w-5 h-5" />
           Get Started

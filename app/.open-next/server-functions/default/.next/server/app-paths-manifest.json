@@ -1,0 +1,11 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/pollen/route": "app/api/pollen/route.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/api/news/route": "app/api/news/route.js",
+  "/api/weather/route": "app/api/weather/route.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js",
+  "/auth/signin/page": "app/auth/signin/page.js"
+}

@@ -1,16 +1,15 @@
-import { NextAuthOptions } from "next-auth"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import { prisma } from "./prisma"
-import GoogleProvider from "next-auth/providers/google"
+// import { PrismaAdapter } from "@auth/prisma-adapter"
+// import { prisma } from "./prisma"
+// import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 
-export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+export const authOptions = {
+  // adapter: PrismaAdapter(prisma), // Temporarily disabled for Cloudflare Workers compatibility
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    }),
+    // GoogleProvider({
+    //   clientId: process.env.GOOGLE_CLIENT_ID || "",
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    // }),
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -22,55 +21,34 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        // In a real app, you'd verify the password against a hash
-        // For demo purposes, we'll accept any password for any email
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email
-          }
-        })
-
-        if (user) {
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            image: user.image,
-          }
-        }
-
-        // Create new user if doesn't exist (demo only)
-        const newUser = await prisma.user.create({
-          data: {
-            email: credentials.email,
-            name: credentials.email.split('@')[0],
-          }
-        })
-
+        // Temporary demo implementation without database
+        // In a real app, you'd verify against a database
         return {
-          id: newUser.id,
-          email: newUser.email,
-          name: newUser.name,
-          image: newUser.image,
+          id: "1",
+          email: credentials.email,
+          name: credentials.email.split('@')[0],
+          image: null,
         }
       }
     })
   ],
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
   },
   pages: {
     signIn: "/auth/signin",
     signOut: "/auth/signout",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id
       }
       return token
     },
-    async session({ session, token }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async session({ session, token }: any) {
       if (token && session.user) {
         session.user.id = token.id as string
       }
