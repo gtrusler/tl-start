@@ -7,14 +7,57 @@ import {
   Home, Bot, Folder, Briefcase, BarChart3, Settings, Plus, 
   Menu, Sun, Newspaper, Zap, Link, ClipboardList, Mail, 
   Calendar, CreditCard, BookOpen, Users, Search, FileText,
-  PlusCircle, User, LogOut
+  PlusCircle, User, LogOut, Cloud, CloudRain, CloudSnow, CloudLightning
 } from "lucide-react"
+import { WeatherData, NewsResponse } from "@/types/api"
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [currentView, setCurrentView] = useState("dashboard")
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null)
+  const [newsData, setNewsData] = useState<NewsResponse | null>(null)
+  const [weatherLoading, setWeatherLoading] = useState(true)
+  const [newsLoading, setNewsLoading] = useState(true)
+
+  // Fetch weather data
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        const response = await fetch('/api/weather')
+        if (response.ok) {
+          const data = await response.json()
+          setWeatherData(data)
+        }
+      } catch (error) {
+        console.error('Failed to fetch weather:', error)
+      } finally {
+        setWeatherLoading(false)
+      }
+    }
+
+    fetchWeather()
+  }, [])
+
+  // Fetch news data
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch('/api/news')
+        if (response.ok) {
+          const data = await response.json()
+          setNewsData(data)
+        }
+      } catch (error) {
+        console.error('Failed to fetch news:', error)
+      } finally {
+        setNewsLoading(false)
+      }
+    }
+
+    fetchNews()
+  }, [])
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -32,6 +75,33 @@ export default function Dashboard() {
 
   if (!session) {
     return null
+  }
+
+  // Helper function to get weather icon component
+  const getWeatherIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'sun': return Sun
+      case 'cloud': return Cloud
+      case 'cloud-rain': return CloudRain
+      case 'cloud-snow': return CloudSnow
+      case 'cloud-lightning': return CloudLightning
+      default: return Sun
+    }
+  }
+
+  // Helper function to format time ago
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
+    
+    if (diffInHours === 0) return 'Just now'
+    if (diffInHours === 1) return '1 hour ago'
+    if (diffInHours < 24) return `${diffInHours} hours ago`
+    
+    const diffInDays = Math.floor(diffInHours / 24)
+    if (diffInDays === 1) return '1 day ago'
+    return `${diffInDays} days ago`
   }
 
   const navItems = [
@@ -168,11 +238,29 @@ export default function Dashboard() {
               {/* Weather Widget */}
               <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 animate-in slide-in-from-bottom duration-500">
                 <div className="text-center">
-                  <Sun className="w-16 h-16 text-green-500 mx-auto mb-4 animate-pulse" />
-                  <h3 className="text-lg font-semibold mb-2">Weather</h3>
-                  <div className="text-3xl font-bold text-blue-600 mb-1">72°F</div>
-                  <div className="text-gray-600">Sunny, Perfect day</div>
-                  <div className="text-sm text-gray-500 mt-2">San Francisco, CA</div>
+                  {weatherLoading ? (
+                    <div className="w-16 h-16 mx-auto mb-4 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600"></div>
+                  ) : weatherData ? (
+                    <>
+                      {(() => {
+                        const WeatherIcon = getWeatherIcon(weatherData.icon)
+                        return <WeatherIcon className="w-16 h-16 text-blue-500 mx-auto mb-4" />
+                      })()}
+                      <h3 className="text-lg font-semibold mb-2">Weather</h3>
+                      <div className="text-3xl font-bold text-blue-600 mb-1">{weatherData.temperature}°F</div>
+                      <div className="text-gray-600">{weatherData.description}</div>
+                      <div className="text-sm text-gray-500 mt-2">{weatherData.location}</div>
+                      <div className="text-xs text-gray-400 mt-1">
+                        Humidity: {weatherData.humidity}% • Wind: {weatherData.windSpeed} mph
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <Sun className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold mb-2">Weather</h3>
+                      <div className="text-gray-500">Unable to load weather</div>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -180,22 +268,38 @@ export default function Dashboard() {
               <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 animate-in slide-in-from-bottom duration-700">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <Newspaper className="w-5 h-5 text-blue-600" />
-                  Industry News
+                  Latest News
                 </h3>
-                <div className="space-y-4">
-                  <div className="border-b border-gray-100 pb-3">
-                    <div className="font-medium text-sm">Market Updates and Trends</div>
-                    <div className="text-xs text-gray-500">2 hours ago</div>
+                {newsLoading ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="border-b border-gray-100 pb-3">
+                        <div className="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                        <div className="h-3 bg-gray-100 rounded animate-pulse w-20"></div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="border-b border-gray-100 pb-3">
-                    <div className="font-medium text-sm">New Technology Advancements</div>
-                    <div className="text-xs text-gray-500">4 hours ago</div>
+                ) : newsData?.articles ? (
+                  <div className="space-y-4">
+                    {newsData.articles.map((article, index) => (
+                      <div key={index} className={`${index < newsData.articles.length - 1 ? 'border-b border-gray-100 pb-3' : ''}`}>
+                        <a 
+                          href={article.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="font-medium text-sm hover:text-blue-600 transition-colors line-clamp-2"
+                        >
+                          {article.title}
+                        </a>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {formatTimeAgo(article.publishedAt)}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div>
-                    <div className="font-medium text-sm">Industry Best Practices</div>
-                    <div className="text-xs text-gray-500">6 hours ago</div>
-                  </div>
-                </div>
+                ) : (
+                  <div className="text-gray-500 text-sm">Unable to load news</div>
+                )}
               </div>
 
               {/* Quick Actions */}

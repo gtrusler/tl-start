@@ -1,0 +1,44 @@
+
+> app@0.1.0 dev
+> next dev --turbopack
+
+ ⚠ Warning: Found multiple lockfiles. Selecting /Users/gtrusler/package-lock.json.
+   Consider removing the lockfiles at:
+   * /Users/gtrusler/Developer/tl-start/app/package-lock.json
+
+   ▲ Next.js 15.4.2 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.68.54:3000
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 794ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1190ms
+ GET / 200 in 1339ms
+ ○ Compiling /api/auth/[...nextauth] ...
+ GET /api/auth/session 200 in 600ms
+ ✓ Compiled /api/auth/[...nextauth] in 596ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 669ms
+ ✓ Compiled /auth/signin in 200ms
+ GET /auth/signin 200 in 237ms
+ GET /api/auth/providers 200 in 46ms
+ GET /api/auth/csrf 200 in 19ms
+ POST /api/auth/callback/credentials 200 in 1106ms
+ GET /api/auth/session 200 in 25ms
+ ✓ Compiled /dashboard in 217ms
+ GET /dashboard 200 in 251ms
+ GET /dashboard 200 in 92ms
+ GET /dashboard 200 in 18ms
+ GET /dashboard 200 in 55ms
+ GET /dashboard 200 in 13ms
+ ✓ Compiled in 23ms
+ ✓ Compiled in 21ms
+ ✓ Compiled in 20ms
+ ✓ Compiled /api/weather in 127ms
+ GET /api/weather 200 in 173ms
+ GET /api/news 200 in 454ms
+ ✓ Compiled in 66ms
+ ✓ Compiled in 89ms
+ ✓ Compiled in 36ms
+ ✓ Compiled in 34ms
