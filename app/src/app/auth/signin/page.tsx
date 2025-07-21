@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Eye, EyeOff, LogIn, UserCheck } from "lucide-react"
+import { useTheme } from "@/hooks/use-theme"
 
 export default function SignIn() {
   const [email, setEmail] = useState("")
@@ -12,6 +13,16 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const { currentTheme } = useTheme()
+
+  useEffect(() => {
+    const error = searchParams.get('error')
+    if (error) {
+      console.log("OAuth Error:", error)
+      setError(`Authentication error: ${error}`)
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -42,26 +53,26 @@ export default function SignIn() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex items-center justify-center p-6 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-blue-500/5 to-transparent rounded-full transform translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 left-0 w-3/5 h-3/5 bg-gradient-to-tr from-green-500/3 to-transparent rounded-full transform -translate-x-1/3 translate-y-1/3" />
+      <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-primary/5 to-transparent rounded-full transform translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-0 left-0 w-3/5 h-3/5 bg-gradient-to-tr from-secondary/3 to-transparent rounded-full transform -translate-x-1/3 translate-y-1/3" />
       
-      <div className="bg-white rounded-2xl p-8 shadow-2xl w-full max-w-md relative z-10 animate-in slide-in-from-bottom-4 duration-500">
+      <div className="bg-card rounded-2xl p-8 shadow-2xl w-full max-w-md relative z-10 animate-in slide-in-from-bottom-4 duration-500 border border-border">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <UserCheck className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center shadow-lg">
+              <UserCheck className="w-8 h-8 text-primary-foreground" />
             </div>
           </div>
-          <h1 className="text-2xl font-semibold text-gray-900 mb-2">Professional Portal</h1>
-          <p className="text-gray-600 text-sm">Sign in to access your dashboard</p>
+          <h1 className="text-2xl font-semibold text-foreground mb-2">Trusler Legal</h1>
+          <p className="text-muted-foreground text-sm">Sign in to access your legal dashboard</p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2">
+          <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-lg mb-6 flex items-center gap-2">
             <span className="text-sm">{error}</span>
           </div>
         )}
@@ -69,7 +80,7 @@ export default function SignIn() {
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2 uppercase tracking-wide">
+            <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2 uppercase tracking-wide">
               Email Address
             </label>
             <input
@@ -77,14 +88,14 @@ export default function SignIn() {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+              className="w-full px-4 py-3 border border-input bg-background rounded-lg focus:ring-2 focus:ring-ring focus:border-primary transition-all outline-none text-foreground"
               placeholder="john@company.com"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2 uppercase tracking-wide">
+            <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2 uppercase tracking-wide">
               Password
             </label>
             <div className="relative">
@@ -93,14 +104,14 @@ export default function SignIn() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none pr-12"
+                className="w-full px-4 py-3 border border-input bg-background rounded-lg focus:ring-2 focus:ring-ring focus:border-primary transition-all outline-none pr-12 text-foreground"
                 placeholder="Enter your password"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500 transition-colors"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -109,10 +120,10 @@ export default function SignIn() {
 
           <div className="flex items-center justify-between">
             <label className="flex items-center gap-2">
-              <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-              <span className="text-sm text-gray-600">Remember me</span>
+              <input type="checkbox" className="rounded border-input text-primary focus:ring-ring" />
+              <span className="text-sm text-muted-foreground">Remember me</span>
             </label>
-            <a href="#" className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+            <a href="#" className="text-sm text-primary hover:text-primary/80 font-medium">
               Forgot password?
             </a>
           </div>
@@ -120,10 +131,10 @@ export default function SignIn() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary/90 focus:ring-4 focus:ring-blue-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:bg-primary/90 focus:ring-4 focus:ring-ring transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
                 <LogIn className="w-5 h-5" />
@@ -135,15 +146,15 @@ export default function SignIn() {
 
         {/* Divider */}
         <div className="flex items-center gap-4 my-6">
-          <div className="flex-1 h-px bg-gray-300" />
-          <span className="text-sm text-gray-500 font-medium uppercase tracking-wide">Or continue with</span>
-          <div className="flex-1 h-px bg-gray-300" />
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-sm text-muted-foreground font-medium uppercase tracking-wide">Or continue with</span>
+          <div className="flex-1 h-px bg-border" />
         </div>
 
         {/* Google Sign In */}
         <button
           onClick={handleGoogleSignIn}
-          className="w-full bg-white border-2 border-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-50 hover:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-all flex items-center justify-center gap-3"
+          className="w-full bg-card border-2 border-border text-foreground py-3 rounded-lg font-medium hover:bg-accent hover:border-primary focus:ring-4 focus:ring-ring transition-all flex items-center justify-center gap-3"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -155,10 +166,10 @@ export default function SignIn() {
         </button>
 
         {/* Footer */}
-        <div className="text-center mt-6 pt-6 border-t border-gray-200">
-          <p className="text-sm text-gray-600">
+        <div className="text-center mt-6 pt-6 border-t border-border">
+          <p className="text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
-            <a href="#" className="text-blue-600 hover:text-blue-800 font-medium">
+            <a href="#" className="text-primary hover:text-primary/80 font-medium">
               Create one here
             </a>
           </p>

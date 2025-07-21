@@ -218,9 +218,6 @@ export default function Dashboard() {
   const navItems = [
     { id: "dashboard", icon: Home, label: "Dashboard" },
     { id: "ai-assistants", icon: Bot, label: "AI Assistants" },
-    { id: "documents", icon: Folder, label: "Documents" },
-    { id: "projects", icon: Briefcase, label: "Projects" },
-    { id: "analytics", icon: BarChart3, label: "Analytics" },
     { id: "settings", icon: Settings, label: "Settings" },
   ]
 
@@ -231,19 +228,24 @@ export default function Dashboard() {
     { icon: Users, label: "Google Contacts", url: "https://contacts.google.com", description: "Manage your contacts and address book" },
     { icon: Calendar, label: "Google Calendar", url: "https://calendar.google.com/", description: "View and manage your schedule and appointments" },
     { icon: Search, label: "Lexis AI", url: "https://signin.lexisnexis.com/", description: "Legal research and AI assistance" },
+    { icon: Bot, label: "Claude AI", url: "https://webai.truslerlegal.com/", description: "Privacy Protected AI" },
+    { icon: Search, label: "Perplexity AI", url: "https://www.perplexity.ai/", description: "AI‑powered 'ask‑the-web' engine that answers questions" },
     { icon: BookOpen, label: "Wiki", url: "https://trusler-legal-portal.gtrusler.workers.dev/dashboard", description: "Firm knowledge base and documentation" },
-    { icon: Mail, label: "Email" },
-    { icon: FileText, label: "Templates" },
-    { icon: BarChart3, label: "Reports" },
+    { icon: FileText, label: "Matters", url: "https://drive.google.com/drive/folders/0AMttBSOpkVihUk9PVA", description: "Google Drive online" },
   ]
 
   const aiAssistants = [
-    { icon: User, label: "Project Assistant" },
-    { icon: FileText, label: "Document Helper" },
-    { icon: Search, label: "Research Bot" },
-    { icon: Briefcase, label: "Business Advisor" },
-    { icon: BarChart3, label: "Analytics Helper" },
-    { icon: PlusCircle, label: "Create New Bot" },
+    { icon: Users, label: "Texas Family Law Expert", url: "https://texasfamilylawexpert-25381.chipp.ai", description: "Specialized expertise in Texas family law matters" },
+    { icon: FileText, label: "Texas Prenup Expert", url: "https://texasprenupexpert-25361.chipp.ai", description: "Prenuptial agreement guidance under Texas law" },
+    { icon: Briefcase, label: "Collaborative Practice Coach", url: "https://chat.collaborativecoachai.com", description: "Collaborative law practice guidance and coaching" },
+    { icon: FileText, label: "No Nonsense Writer", url: "https://nononsensewriter-33805.chipp.ai", description: "Clear, direct legal writing assistance" },
+    { icon: Search, label: "Prompt Perfecter", url: "https://promptperfecter-28482.chipp.ai", description: "Optimize prompts for better AI interactions" },
+    { icon: FileText, label: "Write It Better", url: "https://writeitbetter-33835.chipp.ai", description: "Improve and refine your legal writing" },
+    { icon: User, label: "Hawkins Trial Bot", url: "https://hawkinstrialbot-28227.chipp.ai", description: "Trial preparation and strategy assistance" },
+    { icon: User, label: "Mylo Wilco Bot", url: "https://mylowilcobot-26125.chipp.ai", description: "Williamson County specific legal guidance" },
+    { icon: User, label: "Mylo Travis Bot", url: "https://mylotravisbot-44238.chipp.ai", description: "Travis County specific legal guidance" },
+    { icon: User, label: "McDaniels Trial Bot", url: "https://mcdanieltrialbot-43426.chipp.ai", description: "Trial advocacy and courtroom strategy" },
+    { icon: Briefcase, label: "Marx Case Assistant", url: "https://marxcaseassistant-62107.chipp.ai", description: "Case management and legal research assistance" },
   ]
 
   return (
