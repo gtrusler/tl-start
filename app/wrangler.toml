@@ -2,11 +2,15 @@ main = ".open-next/worker.js"
 name = "trusler-legal-portal"
 compatibility_date = "2025-07-19"
 compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[[routes]]
+pattern = "portal.truslerlegal.com"
+custom_domain = true
 
 [assets]
 directory = ".open-next/assets"
-binding = "ASSETS"
-
+binding = "STATIC_ASSETS"
 
 [[d1_databases]]
 binding = "DB"
@@ -15,3 +19,12 @@ database_id = "24a8d9e5-6e64-4bd6-8e3d-88e7b543946a"
 
 [vars]
 NODE_ENV = "production"
+# Sensitive configuration - set via wrangler secrets or environment variables
+# DATABASE_URL = "your-database-url"
+NEXTAUTH_URL = "https://portal.truslerlegal.com"
+# NEXTAUTH_SECRET = "your-nextauth-secret"
+# GOOGLE_CLIENT_ID = "your-google-client-id"  
+# GOOGLE_CLIENT_SECRET = "your-google-client-secret"
+# STACK_PROJECT_ID = "your-stack-project-id"
+# STACK_PUBLISHABLE_CLIENT_KEY = "your-stack-publishable-key"
+# STACK_SECRET_SERVER_KEY = "your-stack-secret-key"

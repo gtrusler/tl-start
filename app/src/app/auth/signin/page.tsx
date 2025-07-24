@@ -1,12 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { signIn } from "next-auth/react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Eye, EyeOff, LogIn, UserCheck } from "lucide-react"
 import { useTheme } from "@/hooks/use-theme"
 
-export default function SignIn() {
+function SignInContent() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -30,17 +29,8 @@ export default function SignIn() {
     setError("")
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        setError("Invalid credentials")
-      } else {
-        router.push("/dashboard")
-      }
+      // For now, redirect to Google sign-in since credentials auth needs backend setup
+      setError("Please use Google sign-in for now")
     } catch (error) {
       setError("Something went wrong")
     } finally {
@@ -49,7 +39,8 @@ export default function SignIn() {
   }
 
   const handleGoogleSignIn = () => {
-    signIn("google", { callbackUrl: "/dashboard" })
+    const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
+    window.location.href = `/api/auth/google?callbackUrl=${encodeURIComponent(callbackUrl)}`
   }
 
   return (
@@ -176,5 +167,17 @@ export default function SignIn() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SignIn() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <SignInContent />
+    </Suspense>
   )
 }

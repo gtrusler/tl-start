@@ -1,23 +1,23 @@
 "use client"
 
-import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { UserCheck, LogIn } from "lucide-react"
 import { useTheme } from "@/hooks/use-theme"
+import { useAuth } from "@/hooks/use-auth"
 
 export default function Home() {
-  const { data: session, status } = useSession()
+  const { user, loading } = useAuth()
   const router = useRouter()
   const { currentTheme } = useTheme()
 
   useEffect(() => {
-    if (status === "authenticated") {
+    if (!loading && user) {
       router.push("/dashboard")
     }
-  }, [status, router])
+  }, [loading, user, router])
 
-  if (status === "loading") {
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />

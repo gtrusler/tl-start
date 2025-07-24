@@ -1,42 +1,24 @@
 "use client"
 
-import { useSession, getProviders, signIn } from "next-auth/react"
-import { useEffect, useState } from "react"
+import { useAuth } from "@/hooks/use-auth"
 
 export default function DebugAuth() {
-  const { data: session, status } = useSession()
-  const [providers, setProviders] = useState<any>(null)
-
-  useEffect(() => {
-    const fetchProviders = async () => {
-      const res = await getProviders()
-      setProviders(res)
-    }
-    fetchProviders()
-  }, [])
+  const { user, loading, error } = useAuth()
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">NextAuth Debug Page</h1>
+      <h1 className="text-2xl font-bold mb-6">Edge Auth Debug Page</h1>
       
       <div className="space-y-6">
         {/* Session Status */}
         <div className="border p-4 rounded">
-          <h2 className="text-lg font-semibold mb-2">Session Status</h2>
-          <p><strong>Status:</strong> {status}</p>
-          {session && (
+          <h2 className="text-lg font-semibold mb-2">Authentication Status</h2>
+          <p><strong>Loading:</strong> {loading ? "Yes" : "No"}</p>
+          <p><strong>Authenticated:</strong> {user ? "Yes" : "No"}</p>
+          <p><strong>Error:</strong> {error || "None"}</p>
+          {user && (
             <pre className="bg-gray-100 p-2 rounded mt-2 text-xs overflow-auto">
-              {JSON.stringify(session, null, 2)}
-            </pre>
-          )}
-        </div>
-
-        {/* Providers */}
-        <div className="border p-4 rounded">
-          <h2 className="text-lg font-semibold mb-2">Available Providers</h2>
-          {providers && (
-            <pre className="bg-gray-100 p-2 rounded text-xs overflow-auto">
-              {JSON.stringify(providers, null, 2)}
+              {JSON.stringify(user, null, 2)}
             </pre>
           )}
         </div>
@@ -44,25 +26,27 @@ export default function DebugAuth() {
         {/* Environment Variables */}
         <div className="border p-4 rounded">
           <h2 className="text-lg font-semibold mb-2">Environment Check</h2>
-          <p><strong>NEXTAUTH_URL:</strong> {process.env.NEXTAUTH_URL || "Not set"}</p>
           <p><strong>NODE_ENV:</strong> {process.env.NODE_ENV}</p>
+          <p><strong>Auth System:</strong> Edge-compatible OAuth</p>
         </div>
 
         {/* Manual Sign In */}
         <div className="border p-4 rounded">
           <h2 className="text-lg font-semibold mb-2">Manual Sign In</h2>
           <button 
-            onClick={() => signIn("google", { redirect: false })}
+            onClick={() => window.location.href = "/api/auth/google"}
             className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
           >
-            Sign In with Google (No Redirect)
+            Sign In with Google
           </button>
-          <button 
-            onClick={() => signIn("google")}
-            className="bg-green-500 text-white px-4 py-2 rounded"
-          >
-            Sign In with Google (With Redirect)
-          </button>
+          {user && (
+            <button 
+              onClick={() => window.location.href = "/api/auth/signout"}
+              className="bg-red-500 text-white px-4 py-2 rounded"
+            >
+              Sign Out
+            </button>
+          )}
         </div>
       </div>
     </div>
