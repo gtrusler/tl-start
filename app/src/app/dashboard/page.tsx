@@ -234,6 +234,7 @@ export default function Dashboard() {
     { icon: Search, label: "Perplexity AI", url: "https://www.perplexity.ai/", description: "AI‑powered 'ask‑the-web' engine that answers questions" },
     { icon: BookOpen, label: "Wiki", url: "https://tlwiki.gtrusler.workers.dev", description: "Firm knowledge base and documentation" },
     { icon: FileText, label: "Matters", url: "https://drive.google.com/drive/folders/0AMttBSOpkVihUk9PVA", description: "Google Drive online" },
+    { icon: Zap, label: "Passphrase Generator", url: "https://claude.ai/public/artifacts/015362e2-dfa9-48db-a61f-3f57c4ea14a7", description: "Generate secure, memorable passphrases" },
   ]
 
   const aiAssistants = [
