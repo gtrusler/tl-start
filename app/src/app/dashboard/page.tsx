@@ -235,6 +235,7 @@ export default function Dashboard() {
     { icon: BookOpen, label: "Wiki", url: "https://tlwiki.gtrusler.workers.dev", description: "Firm knowledge base and documentation" },
     { icon: FileText, label: "Matters", url: "https://drive.google.com/drive/folders/0AMttBSOpkVihUk9PVA", description: "Google Drive online" },
     { icon: Zap, label: "Passphrase Generator", url: "https://claude.ai/public/artifacts/2a10bda6-54fd-4e29-a6b9-a32748733142", description: "Generate secure, memorable passphrases for your accounts" },
+    { icon: FileText, label: "Child Support Calculator", url: "https://claude.ai/public/artifacts/72f8e198-0b85-4e3e-9151-691592910a2d", description: "Calculate child support amounts based on Texas guidelines" },
   ]
 
   const aiAssistants = [
