@@ -220,6 +220,7 @@ export default function Dashboard() {
   const navItems = [
     { id: "dashboard", icon: Home, label: "Dashboard" },
     { id: "ai-assistants", icon: Bot, label: "AI Assistants" },
+    { id: "case-assistants", icon: Briefcase, label: "Case Assistants", route: "/case-assistants" },
     { id: "settings", icon: Settings, label: "Settings" },
   ]
 
@@ -245,12 +246,6 @@ export default function Dashboard() {
     { icon: FileText, label: "No Nonsense Writer", url: "https://nononsensewriter-33805.chipp.ai", description: "Clear, direct legal writing assistance" },
     { icon: Search, label: "Prompt Perfecter", url: "https://promptperfecter-28482.chipp.ai", description: "Optimize prompts for better AI interactions" },
     { icon: FileText, label: "Write It Better", url: "https://writeitbetter-33835.chipp.ai", description: "Improve and refine your legal writing" },
-    { icon: User, label: "Hawkins Trial Bot", url: "https://flowise.lexpertcloud.com/chatbot/d54d2ccb-f93b-4303-b65e-8c17b28f7ebf", description: "Trial preparation and strategy assistance" },
-    { icon: User, label: "Mylo Wilco Bot", url: "https://flowise.lexpertcloud.com/chatbot/ba935964-ddfd-4bf0-8485-d58f0a38c42e", description: "Williamson County specific legal guidance" },
-    { icon: User, label: "Mylo Travis Bot", url: "https://mylotravisbot-44238.chipp.ai", description: "Travis County specific legal guidance" },
-    { icon: User, label: "McDaniels Trial Bot", url: "https://mcdanieltrialbot-43426.chipp.ai", description: "Trial advocacy and courtroom strategy" },
-    { icon: Briefcase, label: "Marx Case Assistant", url: "https://marxcaseassistant-62107.chipp.ai", description: "Case management and legal research assistance" },
-    { icon: User, label: "Erwin Trial Bot", url: "https://flowise.lexpertcloud.com/chatbot/e9682ad6-c713-4f12-9b6e-06125279adb1", description: "Advanced trial strategy and courtroom advocacy assistance" },
   ]
 
   return (
@@ -279,8 +274,12 @@ export default function Dashboard() {
             <button
               key={item.id}
               onClick={() => {
-                setCurrentView(item.id)
-                setSidebarOpen(false)
+                if (item.route) {
+                  router.push(item.route)
+                } else {
+                  setCurrentView(item.id)
+                  setSidebarOpen(false)
+                }
               }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                 currentView === item.id
