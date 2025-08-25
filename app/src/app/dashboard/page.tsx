@@ -219,7 +219,7 @@ export default function Dashboard() {
 
   const navItems = [
     { id: "dashboard", icon: Home, label: "Dashboard" },
-    { id: "ai-assistants", icon: Bot, label: "AI Assistants" },
+    { id: "ai-assistants", icon: Bot, label: "AI Tools" },
     { id: "case-assistants", icon: Briefcase, label: "Case Assistants", route: "/case-assistants" },
     { id: "settings", icon: Settings, label: "Settings" },
   ]
@@ -246,6 +246,7 @@ export default function Dashboard() {
     { icon: FileText, label: "No Nonsense Writer", url: "https://nononsensewriter-33805.chipp.ai", description: "Clear, direct legal writing assistance" },
     { icon: Search, label: "Prompt Perfecter", url: "https://promptperfecter-28482.chipp.ai", description: "Optimize prompts for better AI interactions" },
     { icon: FileText, label: "Write It Better", url: "https://writeitbetter-33835.chipp.ai", description: "Improve and refine your legal writing" },
+    { icon: Users, label: "Elder Care Expert", url: "https://flowise.lexpertcloud.com/chatbot/7f47e6ad-ae37-4d0e-aa8f-c24216626a96", description: "Expert guidance on elder law and care planning" },
   ]
 
   return (
@@ -515,13 +516,13 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* AI Assistants Content */}
+        {/* AI Tools Content */}
         {currentView === "ai-assistants" && (
           <div className="p-6 pt-0">
             <div className="bg-card rounded-2xl p-6 shadow-lg">
               <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
                 <Bot className="w-6 h-6 text-primary" />
-                AI Assistants
+                AI Tools
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {aiAssistants.map((assistant, index) => (
