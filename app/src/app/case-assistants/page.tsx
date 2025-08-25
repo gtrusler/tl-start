@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { 
-  User, Briefcase, Menu, ArrowLeft, LogOut
+  User, Briefcase, Menu, ArrowLeft, LogOut, Home, Bot, Settings, Plus
 } from "lucide-react"
 import { ThemeSettingsSelector } from "@/components/theme-settings-selector"
 import { useTheme } from "@/hooks/use-theme"
@@ -14,6 +14,7 @@ export default function CaseAssistants() {
   const router = useRouter()
   const { currentTheme } = useTheme()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [currentView] = useState("case-assistants")
 
   useEffect(() => {
     if (!loading && !user) {
@@ -47,6 +48,26 @@ export default function CaseAssistants() {
     router.push("/auth/signin")
   }
 
+  // Helper function to generate avatar URL
+  const getAvatarUrl = (name: string) => {
+    const initials = name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      name
+    )}&background=random&size=120&format=svg&rounded=true&bold=true`
+  }
+
+  const navItems = [
+    { id: "dashboard", icon: Home, label: "Dashboard", route: "/dashboard" },
+    { id: "ai-assistants", icon: Bot, label: "AI Tools", route: "/dashboard" },
+    { id: "case-assistants", icon: Briefcase, label: "Case Assistants" },
+    { id: "settings", icon: Settings, label: "Settings", route: "/dashboard" },
+  ]
+
   return (
     <div className="min-h-screen bg-background">
       
@@ -59,45 +80,82 @@ export default function CaseAssistants() {
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 h-full w-64 bg-card border-r border-border transform transition-transform duration-300 ease-in-out z-50 ${
+      <nav className={`fixed left-0 top-0 h-full w-72 bg-card shadow-xl z-50 transform transition-transform lg:translate-x-0 flex flex-col ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } md:translate-x-0`}>
+      }`}>
         <div className="p-6">
-          <h2 className="text-2xl font-bold text-primary">Dashboard</h2>
+          <h2 className="text-xl font-semibold text-primary mb-2">Trusler Legal Portal</h2>
+          <p className="text-sm text-muted-foreground">Internal Dashboard</p>
         </div>
         
-        <nav className="px-4">
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors mb-2"
-          >
-            <ArrowLeft className="h-5 w-5" />
-            <span>Back to Dashboard</span>
-          </button>
+        <div className="flex-1 flex flex-col">
+          <div className="px-4 space-y-2">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                if (item.route) {
+                  router.push(item.route)
+                } else {
+                  setSidebarOpen(false)
+                }
+              }}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                currentView === item.id
+                  ? "bg-primary text-primary-foreground transform scale-105"
+                  : "text-muted-foreground hover:bg-muted hover:transform hover:scale-102"
+              }`}
+            >
+              <item.icon className="w-6 h-6" />
+              <span className="font-medium">{item.label}</span>
+            </button>
+          ))}
+          </div>
           
-          <button
-            onClick={handleSignOut}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-          >
-            <LogOut className="h-5 w-5" />
-            <span>Sign Out</span>
-          </button>
-        </nav>
+          <div className="mt-8 px-4 pt-8 border-t border-border">
+            <button className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:bg-muted rounded-lg transition-all">
+              <Plus className="w-6 h-6" />
+              <span className="font-medium">Add New Page</span>
+            </button>
+          </div>
+        </div>
 
-        <div className="absolute bottom-4 left-4 right-4">
+        {/* User Profile - Bottom of Sidebar */}
+        <div className="px-4 py-4 border-t border-border">
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+            <img 
+              src={user?.image || getAvatarUrl(user?.name || 'User')}
+              alt={user?.name || 'User'}
+              className="w-12 h-12 rounded-full object-cover"
+            />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{user?.name || user?.email}</p>
+              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+            </div>
+            <button 
+              onClick={handleSignOut}
+              className="p-2 hover:bg-muted rounded-lg transition-colors"
+              title="Sign Out"
+            >
+              <LogOut className="w-5 h-5 text-muted-foreground" />
+            </button>
+          </div>
+        </div>
+        
+        <div className="px-4 pb-4">
           <ThemeSettingsSelector />
         </div>
-      </aside>
+      </nav>
 
       {/* Main Content */}
-      <main className="md:ml-64 min-h-screen">
+      <main className="lg:ml-72 min-h-screen">
         {/* Header */}
         <header className="bg-card border-b border-border sticky top-0 z-30">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+                className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
               >
                 <Menu className="h-6 w-6" />
               </button>
