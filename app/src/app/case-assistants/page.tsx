@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
-import { 
-  User, Briefcase, Menu, ArrowLeft, LogOut, Home, Bot, Settings, Plus, Mail
+import {
+  User, Briefcase, Menu, ArrowLeft, LogOut, Home, Bot, Settings, Plus, Mail, Users
 } from "lucide-react"
 
 export default function CaseAssistants() {
@@ -38,7 +38,7 @@ export default function CaseAssistants() {
     { icon: User, label: "Mylo Travis Bot", url: "https://mylotravisbot-44238.chipp.ai", description: "Travis County specific legal guidance" },
     { icon: User, label: "Mylo Wilco Bot", url: "https://flowise.lexpertcloud.com/chatbot/ba935964-ddfd-4bf0-8485-d58f0a38c42e", description: "Williamson County specific legal guidance" },
     { icon: User, label: "Hawkins Trial Bot", url: "https://flowise.lexpertcloud.com/chatbot/d54d2ccb-f93b-4303-b65e-8c17b28f7ebf", description: "Trial preparation and strategy assistance" },
-    { icon: Mail, label: "Consult Follow Up Email", url: "https://n8n.lexpertcloud.com/form/0c4d059e-8be4-479b-ba48-3b33f0a877e9", description: "Generate professional follow-up emails for client consultations" },
+    { icon: User, label: "Hoops Case Assistant", url: "https://flowise.lexpertcloud.com/chatbot/32a84ec6-2053-4d72-813d-c6aa270e52d1", description: "Case analysis and legal strategy assistance" },
   ]
 
 

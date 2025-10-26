@@ -236,7 +236,7 @@ export default function Dashboard() {
     { icon: BookOpen, label: "Wiki", url: "https://tlwiki.gtrusler.workers.dev", description: "Firm knowledge base and documentation" },
     { icon: FileText, label: "Matters", url: "https://drive.google.com/drive/folders/0AMttBSOpkVihUk9PVA", description: "Google Drive online" },
     { icon: Zap, label: "Passphrase Generator", url: "https://claude.ai/public/artifacts/2a10bda6-54fd-4e29-a6b9-a32748733142", description: "Generate secure, memorable passphrases for your accounts" },
-    { icon: FileText, label: "Child Support Calculator", url: "https://claude.ai/public/artifacts/72f8e198-0b85-4e3e-9151-691592910a2d", description: "Calculate child support amounts based on Texas guidelines" },
+    { icon: FileText, label: "Child Support Calculator", url: "https://claude.ai/public/artifacts/dfcb51e3-891d-42bb-a932-3a7697a5e1c3", description: "Calculate child support amounts based on Texas guidelines" },
   ]
 
   const aiAssistants = [
@@ -247,6 +247,7 @@ export default function Dashboard() {
     { icon: Search, label: "Prompt Perfecter", url: "https://promptperfecter-28482.chipp.ai", description: "Optimize prompts for better AI interactions" },
     { icon: FileText, label: "Write It Better", url: "https://writeitbetter-33835.chipp.ai", description: "Improve and refine your legal writing" },
     { icon: Users, label: "Elder Care Expert", url: "https://flowise.lexpertcloud.com/chatbot/7f47e6ad-ae37-4d0e-aa8f-c24216626a96", description: "Expert guidance on elder law and care planning" },
+    { icon: Mail, label: "Consult Follow Up Email", url: "https://n8n.lexpertcloud.com/form/0c4d059e-8be4-479b-ba48-3b33f0a877e9", description: "Generate professional follow-up emails for client consultations" },
   ]
 
   return (
