@@ -3,12 +3,12 @@
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
-import { 
-  Home, Bot, Folder, Briefcase, BarChart3, Settings, Plus, 
-  Menu, Sun, Newspaper, Zap, Link, ClipboardList, Mail, 
+import {
+  Home, Bot, Folder, Briefcase, BarChart3, Settings, Plus,
+  Menu, Sun, Newspaper, Zap, Link, ClipboardList, Mail,
   Calendar, CreditCard, BookOpen, Users, Search, FileText,
   PlusCircle, User, LogOut, Cloud, CloudRain, CloudSnow, CloudLightning,
-  Flower2, AlertTriangle, TrendingUp, TrendingDown, Phone
+  Flower2, AlertTriangle, TrendingUp, TrendingDown, Phone, Layers
 } from "lucide-react"
 import { WeatherData, NewsResponse, PollenData } from "@/types/api"
 import { ThemeSettingsSelector } from "@/components/theme-settings-selector"
@@ -235,6 +235,7 @@ export default function Dashboard() {
     { icon: Search, label: "Perplexity AI", url: "https://www.perplexity.ai/", description: "AI‑powered 'ask‑the-web' engine that answers questions" },
     { icon: BookOpen, label: "Wiki", url: "https://tlwiki.gtrusler.workers.dev", description: "Firm knowledge base and documentation" },
     { icon: FileText, label: "Matters", url: "https://drive.google.com/drive/folders/0AMttBSOpkVihUk9PVA", description: "Google Drive online" },
+    { icon: Layers, label: "OmniTools", url: "https://omnitools.lexpertcloud.com", description: "Utilities for editing images, text, lists, and data" },
     { icon: Zap, label: "Passphrase Generator", url: "https://claude.ai/public/artifacts/2a10bda6-54fd-4e29-a6b9-a32748733142", description: "Generate secure, memorable passphrases for your accounts" },
     { icon: FileText, label: "Child Support Calculator", url: "https://claude.ai/public/artifacts/dfcb51e3-891d-42bb-a932-3a7697a5e1c3", description: "Calculate child support amounts based on Texas guidelines" },
   ]
