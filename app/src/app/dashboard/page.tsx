@@ -231,7 +231,7 @@ export default function Dashboard() {
     { icon: Users, label: "Google Contacts", url: "https://contacts.google.com", description: "Manage your contacts and address book" },
     { icon: Calendar, label: "Google Calendar", url: "https://calendar.google.com/", description: "View and manage your schedule and appointments" },
     { icon: Search, label: "Lexis AI", url: "https://signin.lexisnexis.com/", description: "Legal research and AI assistance" },
-    { icon: Bot, label: "Claude AI", url: "https://webai.truslerlegal.com/", description: "Privacy Protected AI" },
+    { icon: Bot, label: "TruslerLegal AI", url: "https://chat.lexpertcloud.com/", description: "Privacy Protected AI" },
     { icon: Search, label: "Perplexity AI", url: "https://www.perplexity.ai/", description: "AI‑powered 'ask‑the-web' engine that answers questions" },
     { icon: BookOpen, label: "Wiki", url: "https://tlwiki.gtrusler.workers.dev", description: "Firm knowledge base and documentation" },
     { icon: FileText, label: "Matters", url: "https://drive.google.com/drive/folders/0AMttBSOpkVihUk9PVA", description: "Google Drive online" },
