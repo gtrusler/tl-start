@@ -2,10 +2,35 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    // For demo purposes, we'll use a free news API
-    // You can replace this with actual news scraping or a paid API
+    // Using NewsAPI.org for business headlines
+    // Get a free API key from https://newsapi.org/register
+    const API_KEY = process.env.NEWS_API_KEY || 'demo'
+
+    if (API_KEY === 'demo') {
+      // Return mock news data when no API key is configured
+      return NextResponse.json({
+        articles: [
+          {
+            title: "Tech Industry Sees Major Growth",
+            publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+            url: "#"
+          },
+          {
+            title: "Austin Becomes Tech Hub Capital",
+            publishedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+            url: "#"
+          },
+          {
+            title: "Legal Tech Innovation Trends",
+            publishedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+            url: "#"
+          }
+        ]
+      })
+    }
+
     const response = await fetch(
-      'https://newsapi.org/v2/top-headlines?category=business&country=us&apiKey=demo', // You'd need a real API key
+      `https://newsapi.org/v2/top-headlines?category=business&country=us&apiKey=${API_KEY}`,
       {
         headers: {
           'User-Agent': 'TL-Practice-App/1.0'
