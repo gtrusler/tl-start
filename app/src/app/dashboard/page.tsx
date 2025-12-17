@@ -8,7 +8,7 @@ import {
   Menu, Sun, Newspaper, Zap, Link, ClipboardList, Mail,
   Calendar, CreditCard, BookOpen, Users, Search, FileText,
   PlusCircle, User, LogOut, Cloud, CloudRain, CloudSnow, CloudLightning,
-  Flower2, AlertTriangle, TrendingUp, TrendingDown, Phone, Layers
+  Flower2, AlertTriangle, TrendingUp, TrendingDown, Phone, Layers, Share2
 } from "lucide-react"
 import { WeatherData, NewsResponse, PollenData } from "@/types/api"
 import { ThemeSettingsSelector } from "@/components/theme-settings-selector"
@@ -225,6 +225,7 @@ export default function Dashboard() {
   ]
 
   const resourceLinks = [
+    { icon: Share2, label: "Temporary File Share", url: "https://tempshare.truslerlegal.com/", description: "Securely share files with temporary links" },
     { icon: ClipboardList, label: "Clio Manage", url: "https://account.clio.com/login?login_challenge=d8dcba209ddb4a97ad7e5ea9bcf18a65#/", description: "Case management, time tracking, and billing" },
     { icon: Users, label: "Clio Grow", url: "https://account.clio.com/login?login_challenge=7dc986778c264407b20d50825ff34762", description: "Client intake and CRM platform" },
     { icon: Phone, label: "Dialpad", url: "https://dialpad.com/app/", description: "Make and receive calls through our cloud phone system" },
