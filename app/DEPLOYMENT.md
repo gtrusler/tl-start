@@ -1,111 +1,407 @@
-# Cloudflare Pages Deployment Guide
+# Trusler Legal Portal - Deployment Guide
 
-## Prerequisites
+## Quick Reference
 
-1. **Cloudflare Account**: Sign up at [cloudflare.com](https://cloudflare.com)
-2. **Domain Setup**: Ensure `truslerlegal.com` is managed by Cloudflare
-3. **Wrangler CLI**: Install globally with `npm install -g wrangler`
+| Environment | Command | URL |
+|-------------|---------|-----|
+| Local Dev | `npm run dev` | http://localhost:3000 |
+| Production | `npm run deploy` | https://portal.truslerlegal.com |
+| Workers Dev | Auto-deployed | https://trusler-legal-portal.gtrusler.workers.dev |
 
-## Environment Variables
+---
 
-Set these in your Cloudflare Pages project settings:
+## Architecture
 
-```bash
-DATABASE_URL=postgresql://username:password@host/database?sslmode=require
-NEXTAUTH_SECRET=your-32-character-secret-key
-NEXTAUTH_URL=https://portal.truslerlegal.com
-GOOGLE_CLIENT_ID=your-google-oauth-client-id
-GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
-OPENWEATHER_API_KEY=your-weather-api-key
-NEWS_API_KEY=your-news-api-key
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Cloudflare Edge                          │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────────┐    ┌─────────────────┐                     │
+│  │  CDN/SSL/DNS    │───▶│  Workers Runtime │                    │
+│  │  (Automatic)    │    │  (OpenNext)      │                    │
+│  └─────────────────┘    └────────┬─────────┘                    │
+│                                  │                              │
+│         ┌────────────────────────┼────────────────────┐         │
+│         ▼                        ▼                    ▼         │
+│  ┌─────────────┐         ┌─────────────┐      ┌─────────────┐   │
+│  │ Static      │         │ API Routes  │      │ D1 Database │   │
+│  │ Assets      │         │ (SSR)       │      │ (Binding)   │   │
+│  └─────────────┘         └─────────────┘      └─────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+                                  │
+                                  ▼
+                    ┌─────────────────────────┐
+                    │    Neon PostgreSQL      │
+                    │    (External DB)        │
+                    └─────────────────────────┘
+                                  │
+         ┌────────────────────────┼────────────────────┐
+         ▼                        ▼                    ▼
+  ┌─────────────┐         ┌─────────────┐      ┌─────────────┐
+  │ OpenWeather │         │ NewsAPI     │      │ Google OAuth│
+  │ API         │         │             │      │             │
+  └─────────────┘         └─────────────┘      └─────────────┘
 ```
 
-## Deployment Steps
+---
 
-### Option 1: GitHub Integration (Recommended)
+## Local Development
 
-1. **Push to GitHub**:
-   ```bash
-   git add .
-   git commit -m "Add Cloudflare Pages configuration"
-   git push origin main
-   ```
+### Prerequisites
 
-2. **Connect to Cloudflare Pages**:
-   - Go to [Cloudflare Dashboard](https://dash.cloudflare.com)
-   - Navigate to Pages → Create a project
-   - Connect your GitHub repository
-   - Select the repository: `tl-start`
-   - Set build settings:
-     - **Framework preset**: Next.js
-     - **Build command**: `npm run cf-build`
-     - **Build output directory**: `.next`
-     - **Root directory**: `app`
+| Tool | Version | Install |
+|------|---------|---------|
+| Node.js | 20.x | `nvm install 20` |
+| npm | 10.x | Bundled with Node |
+| Wrangler CLI | 4.x | `npm install -g wrangler` |
 
-3. **Configure Environment Variables**:
-   - In Pages project settings → Environment variables
-   - Add all variables from `.env.example`
-
-### Option 2: Direct Upload
-
-1. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-
-2. **Build the Project**:
-   ```bash
-   npm run build
-   ```
-
-3. **Deploy with Wrangler**:
-   ```bash
-   npx wrangler pages deploy .next --project-name trusler-legal-portal
-   ```
-
-## Custom Domain Setup
-
-1. **Add Custom Domain**:
-   - In your Pages project → Custom domains
-   - Add `portal.truslerlegal.com`
-   - Cloudflare will automatically configure DNS
-
-2. **SSL Certificate**:
-   - Cloudflare provides automatic SSL
-   - Certificate will be provisioned within minutes
-
-## Database Migration
-
-Ensure your Neon database is accessible from Cloudflare:
+### Setup
 
 ```bash
+# Clone and navigate
+git clone https://github.com/gtrusler/tl-start.git
+cd tl-start/app
+
+# Install dependencies
+npm install
+
+# Create environment file
+cp .env.example .env.local
+
+# Run database migrations (if using local DB)
+npx prisma migrate dev
+
+# Start development server
+npm run dev
+```
+
+### Environment Variables (Local)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DATABASE_URL` | Yes | Neon PostgreSQL connection string |
+| `NEXTAUTH_SECRET` | Yes | 32+ character secret for session encryption |
+| `NEXTAUTH_URL` | Yes | `http://localhost:3000` for local dev |
+| `GOOGLE_CLIENT_ID` | Yes | Google OAuth client ID |
+| `GOOGLE_CLIENT_SECRET` | Yes | Google OAuth client secret |
+| `OPENWEATHER_API_KEY` | No | OpenWeatherMap API key for weather widget |
+| `NEWS_API_KEY` | No | NewsAPI key for news widget |
+
+---
+
+## Production Deployment
+
+### Infrastructure
+
+| Component | Service | Details |
+|-----------|---------|---------|
+| Runtime | Cloudflare Workers | OpenNext adapter |
+| CDN/SSL | Cloudflare | Automatic SSL, edge caching |
+| Database | Neon PostgreSQL | Serverless Postgres |
+| Domain | Cloudflare DNS | `portal.truslerlegal.com` |
+| CI/CD | GitHub Actions | Auto-deploy on push to `main` |
+
+### Automatic Deployment (Recommended)
+
+Deployments trigger automatically when you push to `main` with changes in `app/**`:
+
+```bash
+git add .
+git commit -m "Your changes"
+git push origin main
+```
+
+GitHub Actions will:
+1. Install dependencies
+2. Build with OpenNext (`npm run build:worker`)
+3. Deploy to Cloudflare Workers
+
+Monitor deployment: https://github.com/gtrusler/tl-start/actions
+
+### Manual Deployment
+
+```bash
+cd app
+
+# Build for Cloudflare Workers
+npm run build:worker
+
+# Deploy
+wrangler deploy
+```
+
+Or combined:
+
+```bash
+npm run deploy
+```
+
+---
+
+## Cloudflare Configuration
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `app/wrangler.toml` | Cloudflare Workers configuration |
+| `.github/workflows/deploy.yml` | CI/CD pipeline |
+| `app/.open-next/` | Build output (generated) |
+
+### wrangler.toml Settings
+
+```toml
+name = "trusler-legal-portal"
+main = ".open-next/worker.js"
+compatibility_date = "2025-07-19"
+compatibility_flags = ["nodejs_compat"]
+
+[[routes]]
+pattern = "portal.truslerlegal.com"
+custom_domain = true
+
+[assets]
+directory = ".open-next/assets"
+binding = "STATIC_ASSETS"
+```
+
+### Secrets Configuration
+
+Set secrets via Wrangler CLI (never commit to repo):
+
+```bash
+# Required secrets
+wrangler secret put DATABASE_URL
+wrangler secret put NEXTAUTH_SECRET
+wrangler secret put GOOGLE_CLIENT_ID
+wrangler secret put GOOGLE_CLIENT_SECRET
+
+# Optional secrets
+wrangler secret put OPENWEATHER_API_KEY
+wrangler secret put NEWS_API_KEY
+```
+
+### GitHub Actions Secret
+
+Add to repository Settings → Secrets → Actions:
+
+| Secret | Description |
+|--------|-------------|
+| `CLOUDFLARE_API_TOKEN` | Cloudflare API token with Workers edit permission |
+
+Create token at: https://dash.cloudflare.com/profile/api-tokens
+
+Required permissions:
+- Account: Cloudflare Workers Scripts (Edit)
+- Zone: Workers Routes (Edit)
+
+---
+
+## DNS Configuration
+
+| Type | Name | Content | Proxy |
+|------|------|---------|-------|
+| CNAME | portal | trusler-legal-portal.gtrusler.workers.dev | Yes |
+
+Or use custom domain in wrangler.toml (already configured).
+
+---
+
+## API Reference
+
+### Authentication
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/auth/google` | Initiate Google OAuth flow |
+| GET | `/api/auth/callback/google` | OAuth callback handler |
+| GET | `/api/auth/session` | Get current session |
+| POST | `/api/auth/signout` | Sign out user |
+
+### Data APIs
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/weather` | Austin weather data |
+| GET | `/api/news` | Legal news headlines |
+| GET | `/api/pollen` | Austin allergy/pollen data |
+| POST | `/api/upload-temp-file` | Upload temporary file |
+
+### Example Response: `/api/weather`
+
+```json
+{
+  "temperature": 75,
+  "description": "Partly cloudy",
+  "humidity": 45,
+  "windSpeed": 12,
+  "icon": "cloud",
+  "location": "Austin, TX"
+}
+```
+
+---
+
+## Database Schema
+
+```sql
+-- Users table
+CREATE TABLE users (
+  id TEXT PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  name TEXT,
+  image TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP
+);
+
+-- OAuth Accounts
+CREATE TABLE accounts (
+  id TEXT PRIMARY KEY,
+  user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+  type TEXT NOT NULL,
+  provider TEXT NOT NULL,
+  provider_account_id TEXT NOT NULL,
+  refresh_token TEXT,
+  access_token TEXT,
+  expires_at INTEGER,
+  token_type TEXT,
+  scope TEXT,
+  id_token TEXT,
+  session_state TEXT,
+  UNIQUE(provider, provider_account_id)
+);
+
+-- Sessions
+CREATE TABLE sessions (
+  id TEXT PRIMARY KEY,
+  session_token TEXT UNIQUE NOT NULL,
+  user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+  expires TIMESTAMP NOT NULL
+);
+```
+
+### Database Migrations
+
+```bash
+# Generate migration from schema changes
+npx prisma migrate dev --name description
+
+# Apply migrations to production
 npx prisma migrate deploy
+
+# Generate Prisma client
 npx prisma generate
 ```
 
-## Post-Deployment Checklist
+---
 
-- [ ] Custom domain `portal.truslerlegal.com` resolves correctly
-- [ ] SSL certificate is active and valid
-- [ ] Authentication flow works (NextAuth.js)
-- [ ] Database connection is successful
-- [ ] API routes respond correctly (`/api/weather`, `/api/news`, `/api/pollen`)
-- [ ] Theme switching functions properly
-- [ ] All widgets load data successfully
+## npm Scripts Reference
+
+| Script | Purpose |
+|--------|---------|
+| `npm run dev` | Start local development server (port 3000) |
+| `npm run build` | Standard Next.js production build |
+| `npm run build:worker` | Build for Cloudflare Workers (OpenNext) |
+| `npm run deploy` | Build + deploy to Cloudflare |
+| `npm run start` | Start production server (standard Next.js) |
+| `npm run lint` | Run ESLint |
+| `npm run cf-build` | CI build command (install + build:worker) |
+
+---
 
 ## Troubleshooting
 
+### Deployment Not Triggering
+
+```bash
+# Check if changes are in app/ directory
+git diff --name-only HEAD~1
+
+# Manually trigger deployment
+gh workflow run deploy.yml
+```
+
+### Check Deployment Status
+
+```bash
+# View recent workflow runs
+gh run list --limit 5
+
+# View specific run logs
+gh run view <run-id> --log
+```
+
+### Wrangler Issues
+
+```bash
+# Login to Cloudflare
+wrangler login
+
+# Check configuration
+wrangler whoami
+
+# View deployment logs
+wrangler tail
+```
+
 ### Build Failures
-- Check environment variables are set correctly
-- Verify Node.js version compatibility (use Node 18+)
-- Review build logs in Cloudflare dashboard
 
-### Runtime Errors
-- Check browser console for client-side errors
-- Monitor Cloudflare Functions logs for server-side issues
-- Verify database connectivity
+```bash
+# Clear build cache
+rm -rf .next .open-next node_modules
+npm install
+npm run build:worker
+```
 
-### Performance Optimization
-- Enable Cloudflare caching for static assets
-- Use Cloudflare Image Optimization if needed
-- Monitor Core Web Vitals in Cloudflare Analytics
+### Database Connection Issues
+
+```bash
+# Test connection
+npx prisma db pull
+
+# Check migrations status
+npx prisma migrate status
+```
+
+### Cache Issues (Live Site)
+
+- Hard refresh: `Cmd+Shift+R` (Mac) / `Ctrl+Shift+R` (Windows)
+- Try incognito/private window
+- Purge cache in Cloudflare dashboard
+
+---
+
+## Post-Deployment Checklist
+
+- [ ] Site loads at https://portal.truslerlegal.com
+- [ ] SSL certificate active (padlock icon)
+- [ ] Google OAuth sign-in works
+- [ ] Weather widget displays data
+- [ ] News widget displays headlines
+- [ ] Pollen/allergy widget works
+- [ ] All resource links functional
+- [ ] Theme switching works
+- [ ] Sign out works correctly
+
+---
+
+## Monitoring
+
+### Cloudflare Dashboard
+- Workers & Pages → trusler-legal-portal
+- Analytics, requests, errors, CPU time
+
+### GitHub Actions
+- Repository → Actions tab
+- View deployment history and logs
+
+### Logs
+
+```bash
+# Stream live logs
+wrangler tail
+
+# Filter errors only
+wrangler tail --format=pretty | grep -i error
+```
