@@ -250,7 +250,7 @@ export default function Dashboard() {
     { icon: Search, label: "Prompt Perfecter", url: "https://promptperfecter-28482.chipp.ai", description: "Optimize prompts for better AI interactions" },
     { icon: FileText, label: "Write It Better", url: "https://writeitbetter-33835.chipp.ai", description: "Improve and refine your legal writing" },
     { icon: Users, label: "Elder Care Expert", url: "https://flowise.lexpertcloud.com/chatbot/7f47e6ad-ae37-4d0e-aa8f-c24216626a96", description: "Expert guidance on elder law and care planning" },
-    { icon: Mail, label: "Consult Follow Up Email", url: "https://n8n.lexpertcloud.com/form/0c4d059e-8be4-479b-ba48-3b33f0a877e9", description: "Generate professional follow-up emails for client consultations" },
+    { icon: Mail, label: "Consult Follow Up Email", url: "https://nnn.lexpertcloud.com/form/0c4d059e-8be4-479b-ba48-3b33f0a877e9", description: "Generate professional follow-up emails for client consultations" },
   ]
 
   return (
