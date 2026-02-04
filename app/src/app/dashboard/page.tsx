@@ -243,7 +243,7 @@ export default function Dashboard() {
   ]
 
   const aiAssistants = [
-    { icon: Users, label: "Texas Family Law Expert", url: "https://texasfamilylawexpert-25381.chipp.ai", description: "Specialized expertise in Texas family law matters" },
+    { icon: Users, label: "Texas Family Law Expert", url: "https://gemini.google.com/gem/1ABYcG7sjO0qc580wvn8xPCJuqVvq2FL3?usp=sharing", description: "Specialized expertise in Texas family law matters" },
     { icon: FileText, label: "Texas Prenup Expert", url: "https://texasprenupexpert-25361.chipp.ai", description: "Prenuptial agreement guidance under Texas law" },
     { icon: Briefcase, label: "Collaborative Practice Coach", url: "https://chat.collaborativecoachai.com", description: "Collaborative law practice guidance and coaching" },
     { icon: FileText, label: "No Nonsense Writer", url: "https://nononsensewriter-33805.chipp.ai", description: "Clear, direct legal writing assistance" },
