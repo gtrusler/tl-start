@@ -1,75 +1,57 @@
 import { NextResponse } from 'next/server'
 
+function parseRssDate(dateStr: string): string {
+  const parsed = new Date(dateStr)
+  return isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString()
+}
+
+function extractArticles(xml: string): Array<{ title: string; publishedAt: string; url: string }> {
+  const articles: Array<{ title: string; publishedAt: string; url: string }> = []
+  const itemRegex = /<item>([\s\S]*?)<\/item>/g
+  let match
+
+  while ((match = itemRegex.exec(xml)) !== null && articles.length < 5) {
+    const item = match[1]
+    const title = item.match(/<title>([\s\S]*?)<\/title>/)?.[1]?.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').trim()
+    const link = item.match(/<link>([\s\S]*?)<\/link>/)?.[1]?.trim()
+    const pubDate = item.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1]?.trim()
+
+    if (title && link) {
+      articles.push({
+        title,
+        url: link,
+        publishedAt: pubDate ? parseRssDate(pubDate) : new Date().toISOString(),
+      })
+    }
+  }
+
+  return articles
+}
+
 export async function GET() {
   try {
-    // For demo purposes, we'll use a free news API
-    // You can replace this with actual news scraping or a paid API
     const response = await fetch(
-      'https://newsapi.org/v2/top-headlines?category=business&country=us&apiKey=demo', // You'd need a real API key
+      'https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en',
       {
-        headers: {
-          'User-Agent': 'TL-Practice-App/1.0'
-        },
-        next: { revalidate: 300 } // Cache for 5 minutes
+        headers: { 'User-Agent': 'TL-Practice-App/1.0' },
+        next: { revalidate: 300 },
       }
     )
 
     if (!response.ok) {
-      // Fallback to mock data if API fails
-      return NextResponse.json({
-        articles: [
-          {
-            title: "Tech Industry Sees Major Growth",
-            publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-            url: "#"
-          },
-          {
-            title: "Austin Becomes Tech Hub Capital",
-            publishedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-            url: "#"
-          },
-          {
-            title: "Legal Tech Innovation Trends",
-            publishedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-            url: "#"
-          }
-        ]
-      })
+      throw new Error(`Google News RSS returned ${response.status}`)
     }
 
-    const data = await response.json() as { articles?: Array<{title: string; publishedAt: string; url: string}> }
-    
-    // Filter and format the news data
-    const formattedNews = data.articles?.slice(0, 3).map((article) => ({
-      title: article.title,
-      publishedAt: article.publishedAt,
-      url: article.url
-    })) || []
+    const xml = await response.text()
+    const articles = extractArticles(xml)
 
-    return NextResponse.json({ articles: formattedNews })
+    if (articles.length === 0) {
+      throw new Error('No articles parsed from RSS feed')
+    }
 
+    return NextResponse.json({ articles })
   } catch (error) {
     console.error('Error fetching news:', error)
-    
-    // Return fallback news data
-    return NextResponse.json({
-      articles: [
-        {
-          title: "Market Updates and Industry Trends",
-          publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          url: "#"
-        },
-        {
-          title: "Austin Business Growth Continues",
-          publishedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-          url: "#"
-        },
-        {
-          title: "Technology Sector Developments",
-          publishedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-          url: "#"
-        }
-      ]
-    })
+    return NextResponse.json({ articles: [] })
   }
 }
