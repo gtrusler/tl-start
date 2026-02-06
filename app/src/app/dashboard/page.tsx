@@ -240,6 +240,7 @@ export default function Dashboard() {
     { icon: Zap, label: "Passphrase Generator", url: "https://claude.ai/public/artifacts/2a10bda6-54fd-4e29-a6b9-a32748733142", description: "Generate secure, memorable passphrases for your accounts" },
     { icon: FileText, label: "Child Support Calculator", url: "https://claude.ai/public/artifacts/dfcb51e3-891d-42bb-a932-3a7697a5e1c3", description: "Calculate child support amounts based on Texas guidelines" },
     { icon: Share2, label: "Temporary File Share", url: "https://tempshare.lexpertcloud.com/", description: "Securely share files with temporary links" },
+    { icon: CreditCard, label: "Intake & Payments", url: "https://intakedash.lexpertcloud.com/", description: "Client intake forms and payment processing" },
   ]
 
   const aiAssistants = [
