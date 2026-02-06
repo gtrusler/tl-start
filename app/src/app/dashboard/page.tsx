@@ -220,7 +220,7 @@ export default function Dashboard() {
   const navItems = [
     { id: "dashboard", icon: Home, label: "Dashboard" },
     { id: "ai-assistants", icon: Bot, label: "AI Tools" },
-    { id: "case-assistants", icon: Briefcase, label: "Case Assistants", route: "/case-assistants" },
+    { id: "case-assistants", icon: Briefcase, label: "Case Assistants", url: "https://www.caseassistai.com/" },
     { id: "settings", icon: Settings, label: "Settings" },
   ]
 
@@ -279,7 +279,9 @@ export default function Dashboard() {
             <button
               key={item.id}
               onClick={() => {
-                if (item.route) {
+                if ('url' in item && item.url) {
+                  window.open(item.url, '_blank', 'noopener,noreferrer')
+                } else if ('route' in item && item.route) {
                   router.push(item.route)
                 } else {
                   setCurrentView(item.id)
