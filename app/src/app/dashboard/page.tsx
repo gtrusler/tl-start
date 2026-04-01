@@ -246,7 +246,7 @@ export default function Dashboard() {
   const aiAssistants = [
     { icon: Users, label: "Texas Family Law Expert", url: "https://opal.google/open/11dg9-8tgAGb4IC5yZYJNVHO9ihpUAy8t?usp=sharing", description: "Specialized expertise in Texas family law matters" },
     { icon: FileText, label: "Texas Prenup Expert", url: "https://texasprenupexpert-25361.chipp.ai", description: "Prenuptial agreement guidance under Texas law" },
-    { icon: Briefcase, label: "Collaborative Practice Coach", url: "https://opal.google/open/1IN3hye9K87_kAc41P8D0rMvDZbMqxGhl?usp=sharing", description: "Collaborative law practice guidance and coaching" },
+    { icon: Briefcase, label: "Collaborative Practice Coach", url: "https://www.collaborativecoachai.com/", description: "Collaborative law practice guidance and coaching" },
     { icon: FileText, label: "No Nonsense Writer", url: "https://nononsensewriter-33805.chipp.ai", description: "Clear, direct legal writing assistance" },
     { icon: Search, label: "Prompt Perfecter", url: "https://promptperfecter-28482.chipp.ai", description: "Optimize prompts for better AI interactions" },
     { icon: FileText, label: "Write It Better", url: "https://writeitbetter-33835.chipp.ai", description: "Improve and refine your legal writing" },
